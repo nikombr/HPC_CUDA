@@ -1,5 +1,5 @@
 TARGET	= reduction
-OBJS	= main.o reduction.o reduction_baseline.o
+OBJS	= main.o reduction.o reduction_baseline.o reduction_smem.o
 
 OPT	= -g -O3
 ISA	= 
@@ -43,6 +43,7 @@ realclean: clean
 
 # dependencies
 #
-main.o  : main.cu reduction.h reduction_baseline.h
-reduction.o: reduction.cu
+main.o  : main.cu reduction.h reduction_baseline.h reduction_smem.h
+reduction.o: reduction.cu 
 reduction_baseline.o: reduction_baseline.cu
+reduction_smem.o: reduction_smem.cu

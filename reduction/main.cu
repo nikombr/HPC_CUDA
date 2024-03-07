@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "reduction_baseline.h"
 #include "reduction.h"
+#include "reduction_smem.h"
 
 
 
@@ -14,7 +15,7 @@ main(int argc, char *argv[]) {
     int   n;
     double  *res_h,*res_d;
     double  *a_h,*a_d;
-    double start, stop_baseline, stop;
+    double start, stop_baseline, stop, stop_smem;
 
     n = 320;
 
@@ -80,6 +81,26 @@ main(int argc, char *argv[]) {
     printf("result: %.4e\n\n", *res_h);
 
     printf("speed-up: %.4f\n\n", stop_baseline/stop);
+    
+
+    // Initialize
+    *res_h = 0.0;
+
+    // Run reduction on device
+    start = omp_get_wtime();
+    cudaMemcpy(res_d, res_h, sizeof(double), cudaMemcpyHostToDevice);
+    reduction_smem<<<dimGrid, dimBlock>>>(a_d, n, res_d);
+    cudaDeviceSynchronize();
+
+    // Copy result back to host 
+    cudaMemcpy(res_h, res_d, sizeof(double), cudaMemcpyDeviceToHost);  
+    stop_smem = omp_get_wtime() - start;
+
+    printf("\nreduction_smem\n");
+    printf("time: %.4f\n", stop);
+    printf("result: %.4e\n\n", *res_h);
+    printf("speed-up vs baseline: %.4f\n\n", stop_baseline/stop_smem);
+    printf("speed-up vs reduction warp: %.4f\n\n", stop/stop_smem);
 
     // Clean-up
     cudaFreeHost(a_h); cudaFree(a_d); cudaFreeHost(res_h); cudaFree(res_d);
