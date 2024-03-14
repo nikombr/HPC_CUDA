@@ -1,5 +1,5 @@
 TARGET	= reduction
-OBJS	= main.o reduction.o reduction_baseline.o reduction_smem.o reduction_presum.o reduction_asyn.o reduction_openmp.o
+OBJS	= main.o reduction.o reduction_openmp.o
 
 OPT	= -g -O3
 ISA	= 
@@ -38,15 +38,11 @@ clean:
 	@/bin/rm -f *.o core
 
 realclean: clean
-	@cd pngwriter/src && $(MAKE) -f Makefile.gnu clean
 	@rm -f $(TARGET)
 
 # dependencies
 #
-main.o  : main.cu reduction.h reduction_baseline.h reduction_smem.h reduction_presum.h reduction_openmp.h reduction_asyn.h
-reduction.o: reduction.cu 
-reduction_baseline.o: reduction_baseline.cu
-reduction_smem.o: reduction_smem.cu
-reduction_presum.o: reduction_presum.cu
-reduction_openmp.o: reduction_openmp.cu
-reduction_asyn.o: reduction_asyn.cu
+main.o  : main.cu reduction.h reduction_openmp.h 
+reduction.o: reduction.cu
+reduction_openmp.o: reduction_openmp.cu 
+# maps.o: maps.cu
