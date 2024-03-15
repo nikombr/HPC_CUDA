@@ -33,7 +33,7 @@ jacobi(double *** u, double *** uold, double *** f, int N, int iter_max, double*
     }
     double stop = omp_get_wtime() - start;
     *tolerance = sum;
-    printf("%d %d %.5e %.5f # N iterations error time\n", N, n, *tolerance, stop);
+    printf("%d %d %.5f %.5e # N iterations time error\n", N, n, stop, *tolerance);
     return;
 
 }
