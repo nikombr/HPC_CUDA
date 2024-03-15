@@ -5,3 +5,5 @@
 *.vtk
 *.bin
 *.out
+*.m
+*.py
