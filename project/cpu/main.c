@@ -60,7 +60,7 @@ main(int argc, char *argv[]) {
     // Initialize and start and boundary conditions
     init(u, uold, f, N, start_T);
 
-    // Call iterator
+    // Call Jacobi iteration
     jacobi(u, uold, f, N, iter_max, &tolerance);
   
     // Dump  results if wanted 
