@@ -8,28 +8,29 @@
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 
-N=200 ## 55, 165, 275, 385
-ITER=2000 ## 200000, 8000, 1500, 600
+ITER=2000
 TOLERANCE=-1
 START_T=5
 
-lscpu
+## lscpu
 
-FOLDER="../results/cpu/gracy"
-FILE_REDUCTION=$FOLDER/reduction.txt
-FILE_NO_REDUCTION=$FOLDER/no_reduction.txt
+for N in {50..200..50};
+do
+    FOLDER="../results/cpu/gracy"
+    FILE_REDUCTION=$FOLDER/reduction_$N.txt
+    FILE_NO_REDUCTION=$FOLDER/no_reduction_$N.txt
 
-rm -rf $FILE_REDUCTION
-rm -rf $FILE_NO_REDUCTION
+    rm -rf $FILE_REDUCTION
+    rm -rf $FILE_NO_REDUCTION
 
-for threads in {1..72..1};
-do  
-    echo -n $threads " " >> $FILE_REDUCTION
-    echo -n $threads " " >> $FILE_NO_REDUCTION
-    OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
-    OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
+    for threads in {1..72..1};
+    do  
+        echo -n $threads " " >> $FILE_REDUCTION
+        echo -n $threads " " >> $FILE_NO_REDUCTION
+        OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
+        OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
 
+    done
 done
-
 exit 0
 
