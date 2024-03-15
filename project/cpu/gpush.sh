@@ -1,15 +1,15 @@
 #!/bin/bash
 #BSUB -J cpu # name
 #BSUB -o outfiles/close_%J.out # output file
-#BSUB -q hpcintrogpush 
+#BSUB -q hpcintrogpu
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
 #BSUB -W 60 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 
-N=100 ## 55, 165, 275, 385
-ITER=1000 ## 200000, 8000, 1500, 600
+N=200 ## 55, 165, 275, 385
+ITER=2000 ## 200000, 8000, 1500, 600
 TOLERANCE=-1
 START_T=5
 
