@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -J gpuh100_cache_test # name
+#BSUB -J cache_test # name
 #BSUB -o outfiles/close_%J.out # output file
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
@@ -12,11 +12,32 @@ ITER=2000
 TOLERANCE=-1
 START_T=5
 
-FOLDER="../results/cpu/gpuh100/cache_test"
+ARCH=`uname -m`
 
-lscpu
+make clean
+make realclean
+make
 
-THREADS="16 32"
+if [[ "$ARCH" == "aarch64" ]]
+then
+    CPU="gracy"
+    THREADS="16 32 64 72"
+    echo "Running on Gracy :)"
+else
+    if [[ "$ARCH" == "x86_64" ]]
+    then
+        CPU="gpuh100"
+        THREADS="16 32"
+        echo "Running on gpuh100"
+    else
+        echo "Confused!"
+        exit 1
+    fi
+fi
+
+FOLDER="../results/cpu/$CPU/cache_test"
+
+## lscpu
 
 for threads in $THREADS;
 do
@@ -27,13 +48,13 @@ do
     rm -rf $FILE_REDUCTION
     rm -rf $FILE_NO_REDUCTION
 
-    for N in {20..300..20};
+    for N in {10..430..20};
     do  
         echo -n $threads " " >> $FILE_REDUCTION
         echo -n $threads " " >> $FILE_NO_REDUCTION
         OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
         OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=close OMP_PLACES=cores ./jacobi_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
-
+    
     done
 done
 exit 0
