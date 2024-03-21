@@ -1,0 +1,15 @@
+16  20 2000 0.02676 2.78991e-18 # N iterations time error
+16  40 2000 0.04796 3.61750e-04 # N iterations time error
+16  60 2000 0.09418 1.53873e-01 # N iterations time error
+16  80 2000 0.16431 1.16554e+00 # N iterations time error
+16  100 2000 0.28028 2.86812e+00 # N iterations time error
+16  120 2000 0.44010 4.85151e+00 # N iterations time error
+16  140 2000 0.65171 7.21036e+00 # N iterations time error
+16  160 2000 0.90503 1.00065e+01 # N iterations time error
+16  180 2000 1.25574 1.32377e+01 # N iterations time error
+16  200 2000 1.83033 1.69001e+01 # N iterations time error
+16  220 2000 3.44207 2.09871e+01 # N iterations time error
+16  240 2000 5.14788 2.54601e+01 # N iterations time error
+16  260 2000 6.51953 3.03532e+01 # N iterations time error
+16  280 2000 8.28848 3.56543e+01 # N iterations time error
+16  300 2000 10.09043 4.13551e+01 # N iterations time error

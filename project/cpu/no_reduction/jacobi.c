@@ -6,12 +6,10 @@ void
 jacobi(double *** u, double *** uold, double *** f, int N, int iter_max, double* tolerance) {
     
     double delta = 2.0/(N+1), delta2 = delta*delta, frac = 1.0/6.0;
-    double val, sum = *tolerance + 1;
     int n = 0;
     double start = omp_get_wtime();
     while (n < iter_max) {
-        sum = 0.0;
-        #pragma omp parallel for private(val) schedule(static)
+        #pragma omp parallel for schedule(static)
         for (int i = 1; i < N+1; i++) {
             for (int j = 1; j < N+1; j++) {
                 for (int k = 1; k < N+1; k++) {
@@ -29,7 +27,6 @@ jacobi(double *** u, double *** uold, double *** f, int N, int iter_max, double*
         n++;
     }
     double stop = omp_get_wtime() - start;
-    *tolerance = sum;
     printf("%d %d %.5f # N iter_max time\n", N, iter_max, stop);
     return;
 

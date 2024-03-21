@@ -1,0 +1,15 @@
+32  20 2000 0.03280 # N iter_max time
+32  40 2000 0.05590 # N iter_max time
+32  60 2000 0.08613 # N iter_max time
+32  80 2000 0.13591 # N iter_max time
+32  100 2000 0.18531 # N iter_max time
+32  120 2000 0.24989 # N iter_max time
+32  140 2000 0.35793 # N iter_max time
+32  160 2000 0.48037 # N iter_max time
+32  180 2000 0.60160 # N iter_max time
+32  200 2000 0.76022 # N iter_max time
+32  220 2000 0.95311 # N iter_max time
+32  240 2000 1.50662 # N iter_max time
+32  260 2000 2.82410 # N iter_max time
+32  280 2000 3.93923 # N iter_max time
+32  300 2000 5.83410 # N iter_max time

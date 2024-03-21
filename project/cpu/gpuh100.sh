@@ -1,7 +1,7 @@
 #!/bin/bash
 #BSUB -J cpu # name
 #BSUB -o outfiles/close_%J.out # output file
-#BSUB -q hpcintrogpu
+#BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
 #BSUB -W 60 # useable time in minutes
@@ -12,11 +12,11 @@ ITER=2000
 TOLERANCE=-1
 START_T=5
 
-## lscpu
+lscpu
 
 for N in {50..200..50};
 do
-    FOLDER="../results/cpu/gpush"
+    FOLDER="../results/cpu/gpuh100"
     FILE_REDUCTION=$FOLDER/reduction_$N.txt
     FILE_NO_REDUCTION=$FOLDER/no_reduction_$N.txt
 
