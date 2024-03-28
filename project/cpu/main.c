@@ -42,6 +42,9 @@ main(int argc, char *argv[]) {
     if (argc == 6) {
 	    output_type = atoi(argv[5]);  // ouput type
     }
+    if (argc == 7) {
+	    *output_ext = argv[6];  // ouput type
+    }
     
     // Allocate memory
     if ( (u = malloc_3d(N+2, N+2, N+2)) == NULL ) {

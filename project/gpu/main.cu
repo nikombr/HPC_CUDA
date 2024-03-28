@@ -57,12 +57,15 @@ main(int argc, char *argv[]) {
         exit(-1);
     }
 
-    // Initialize start and boundary conditions
+    // Initialize start and boundary conditions on host
     init(u_h, uold_h, f_h, N, start_T);
     
     // Copy initializd array to devices
     cudaMemcpy(uold_d, uold_h, (N+2) * (N+2) * (N+2) * sizeof(double), cudaMemcpyHostToDevice);
     cudaMemcpy(f_d, f_h, (N+2) * (N+2) * (N+2) * sizeof(double), cudaMemcpyHostToDevice);
+
+    // Do GPU warm-up
+    // MISSING !!
 
     // Call Jacobi iteration
     jacobi(u_d, uold_d, f_d, N, iter_max, &tolerance);

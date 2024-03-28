@@ -1,5 +1,5 @@
 #!/bin/bash
-#BSUB -J cpu # name
+#BSUB -J speedup_test # name
 #BSUB -o outfiles/close_%J.out # output file
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
@@ -12,18 +12,43 @@ ITER=2000
 TOLERANCE=-1
 START_T=5
 
-lscpu
+## lscpu
+
+ARCH=`uname -m`
+
+## make clean
+## make realclean
+## make
+
+if [[ "$ARCH" == "aarch64" ]]
+then
+    CPU="gracy"
+    THREADS=$(seq 1 1 72)
+    echo "Running on gracy :)"
+else
+    if [[ "$ARCH" == "x86_64" ]]
+    then
+        CPU="gpuh100"
+        THREADS=$(seq 1 1 32)
+        echo "Running on gpuh100"
+    else
+        echo "Confused!"
+        exit 1
+    fi
+fi
+
+FOLDER="../results/cpu/$CPU/speedup_test"
 
 for N in {50..200..50};
 do
-    FOLDER="../results/cpu/gpuh100"
+    
     FILE_REDUCTION=$FOLDER/reduction_$N.txt
     FILE_NO_REDUCTION=$FOLDER/no_reduction_$N.txt
 
     rm -rf $FILE_REDUCTION
     rm -rf $FILE_NO_REDUCTION
 
-    for threads in {1..32..1};
+    for threads in $THREADS;
     do  
         echo -n $threads " " >> $FILE_REDUCTION
         echo -n $threads " " >> $FILE_NO_REDUCTION

@@ -4,7 +4,7 @@
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
-#BSUB -W 60 # useable time in minutes
+#BSUB -W 120 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 
@@ -14,15 +14,15 @@ START_T=5
 
 ARCH=`uname -m`
 
-make clean
-make realclean
-make
+## make clean
+## make realclean
+## make
 
 if [[ "$ARCH" == "aarch64" ]]
 then
     CPU="gracy"
     THREADS="16 32 64 72"
-    echo "Running on Gracy :)"
+    echo "Running on gracy :)"
 else
     if [[ "$ARCH" == "x86_64" ]]
     then
@@ -48,7 +48,7 @@ do
     rm -rf $FILE_REDUCTION
     rm -rf $FILE_NO_REDUCTION
 
-    for N in {10..430..20};
+    for N in {10..500..10} {520..600..20} {630..690..30};
     do  
         echo -n $threads " " >> $FILE_REDUCTION
         echo -n $threads " " >> $FILE_NO_REDUCTION
