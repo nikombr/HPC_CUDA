@@ -37,7 +37,7 @@ else
     fi
 fi
 
-FOLDER="../results/cpu/$CPU/speedup_test"
+FOLDER="../results/cpu/${CPU}/speedup_test"
 
 for N in {50..200..50};
 do

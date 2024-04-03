@@ -17,8 +17,8 @@
 int
 main(int argc, char *argv[]) {
 
-    if (argc < 5 || argc > 6) {
-        printf("Usage: %s N(int) iter_max(int) tolerance(double) start_T(double) [output_type(0, 3 or 4)]\n",argv[0]);
+    if (argc < 5 || argc > 7) {
+        printf("Usage: %s N(int) iter_max(int) tolerance(double) start_T(double) [output_type(0, 3 or 4)] [1 or 2]\n",argv[0]);
         return(1);
     }
 
@@ -27,23 +27,31 @@ main(int argc, char *argv[]) {
     double	tolerance;
     double	start_T;
     int		output_type = 0;
-    char	*output_prefix = "poisson_res";
-    char    *output_ext    = "";
+    char	*output_prefix = "poisson_cpu";
+    char    *output_ext = "";
+    char    *extra_str = "";
     char	output_filename[FILENAME_MAX];
     double 	***u = NULL;
     double 	***uold = NULL;
     double 	***f = NULL;
+    int     n = 0;
 
     // Get the parameters from the command line
     N         = atoi(argv[1]);	// grid size
     iter_max  = atoi(argv[2]);  // max. no. of iterations
     tolerance = atof(argv[3]);  // tolerance
     start_T   = atof(argv[4]);  // start T for all inner grid points
-    if (argc == 6) {
+    if (argc >= 6) {
 	    output_type = atoi(argv[5]);  // ouput type
     }
+
     if (argc == 7) {
-	    *output_ext = argv[6];  // ouput type
+        if (atoi(argv[6]) == 1) {
+	        extra_str = "_reduction";  // ouput type
+        } else {
+            extra_str = "_no_reduction";  // ouput type
+        }
+
     }
     
     // Allocate memory
@@ -64,7 +72,10 @@ main(int argc, char *argv[]) {
     init(u, uold, f, N, start_T);
 
     // Call Jacobi iteration
-    jacobi(u, uold, f, N, iter_max, &tolerance);
+    double start = omp_get_wtime();
+    jacobi(u, uold, f, N, iter_max, &tolerance, &n);
+    double stop = omp_get_wtime() - start;
+    printf("%d %d %.5f %.5e # N iterations time error\n", N, n, stop, tolerance);
   
     // Dump  results if wanted 
     switch(output_type) {
@@ -73,15 +84,15 @@ main(int argc, char *argv[]) {
 	    break;
 	case 3:
 	    output_ext = ".bin";
-	    sprintf(output_filename, "results/%s_%d%s", output_prefix, N, output_ext);
-	    fprintf(stderr, "Write binary dump to %s: ", output_filename);
-	    print_binary(output_filename, N, u);
+	    sprintf(output_filename, "results/%s_%d%s%s", output_prefix, N,extra_str, output_ext);
+	    fprintf(stderr, "\nWrite binary dump to %s\n", output_filename);
+	    print_binary(output_filename, N, uold);
 	    break;
 	case 4:
 	    output_ext = ".vtk";
 	    sprintf(output_filename, "results/%s_%d%s", output_prefix, N, output_ext);
-	    fprintf(stderr, "Write VTK file to %s: ", output_filename);
-	    print_vtk(output_filename, N, u);
+	    fprintf(stderr, "\nWrite VTK file to %s\n", output_filename);
+	    print_vtk(output_filename, N, uold);
 	    break;
 	default:
 	    fprintf(stderr, "Non-supported output type!\n");

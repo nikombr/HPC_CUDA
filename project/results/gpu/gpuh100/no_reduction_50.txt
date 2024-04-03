@@ -1,2 +1,0 @@
- hejf
-50 2000 0.00093 # N iter_max time
