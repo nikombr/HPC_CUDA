@@ -1,32 +1,32 @@
-1  100 2000 1.80957 # N iter_max time
-2  100 2000 0.92594 # N iter_max time
-3  100 2000 0.61880 # N iter_max time
-4  100 2000 0.47481 # N iter_max time
-5  100 2000 0.45488 # N iter_max time
-6  100 2000 0.39842 # N iter_max time
-7  100 2000 0.34649 # N iter_max time
-8  100 2000 0.32877 # N iter_max time
-9  100 2000 0.30620 # N iter_max time
-10  100 2000 0.28554 # N iter_max time
-11  100 2000 0.26550 # N iter_max time
-12  100 2000 0.26121 # N iter_max time
-13  100 2000 0.24870 # N iter_max time
-14  100 2000 0.23514 # N iter_max time
-15  100 2000 0.23435 # N iter_max time
-16  100 2000 0.22901 # N iter_max time
-17  100 2000 0.21642 # N iter_max time
-18  100 2000 0.21705 # N iter_max time
-19  100 2000 0.21283 # N iter_max time
-20  100 2000 0.21142 # N iter_max time
-21  100 2000 0.21337 # N iter_max time
-22  100 2000 0.20574 # N iter_max time
-23  100 2000 0.20649 # N iter_max time
-24  100 2000 0.20703 # N iter_max time
-25  100 2000 0.19586 # N iter_max time
-26  100 2000 0.19225 # N iter_max time
-27  100 2000 0.19501 # N iter_max time
-28  100 2000 0.20047 # N iter_max time
-29  100 2000 0.19119 # N iter_max time
-30  100 2000 0.18692 # N iter_max time
-31  100 2000 0.17806 # N iter_max time
-32  100 2000 0.17514 # N iter_max time
+1  100 2000 3.22384 -1.00000e+00 # N iterations time error
+2  100 2000 1.61450 -1.00000e+00 # N iterations time error
+3  100 2000 1.09631 -1.00000e+00 # N iterations time error
+4  100 2000 0.81100 -1.00000e+00 # N iterations time error
+5  100 2000 0.71693 -1.00000e+00 # N iterations time error
+6  100 2000 0.61227 -1.00000e+00 # N iterations time error
+7  100 2000 0.52418 -1.00000e+00 # N iterations time error
+8  100 2000 0.48571 -1.00000e+00 # N iterations time error
+9  100 2000 0.43234 -1.00000e+00 # N iterations time error
+10  100 2000 0.40197 -1.00000e+00 # N iterations time error
+11  100 2000 0.37052 -1.00000e+00 # N iterations time error
+12  100 2000 0.35918 -1.00000e+00 # N iterations time error
+13  100 2000 0.33904 -1.00000e+00 # N iterations time error
+14  100 2000 0.30848 -1.00000e+00 # N iterations time error
+15  100 2000 0.30913 -1.00000e+00 # N iterations time error
+16  100 2000 0.29804 -1.00000e+00 # N iterations time error
+17  100 2000 0.27985 -1.00000e+00 # N iterations time error
+18  100 2000 0.28016 -1.00000e+00 # N iterations time error
+19  100 2000 0.27854 -1.00000e+00 # N iterations time error
+20  100 2000 0.25143 -1.00000e+00 # N iterations time error
+21  100 2000 0.25230 -1.00000e+00 # N iterations time error
+22  100 2000 0.25039 -1.00000e+00 # N iterations time error
+23  100 2000 0.25053 -1.00000e+00 # N iterations time error
+24  100 2000 0.24220 -1.00000e+00 # N iterations time error
+25  100 2000 0.22718 -1.00000e+00 # N iterations time error
+26  100 2000 0.23272 -1.00000e+00 # N iterations time error
+27  100 2000 0.23380 -1.00000e+00 # N iterations time error
+28  100 2000 0.24232 -1.00000e+00 # N iterations time error
+29  100 2000 0.25461 -1.00000e+00 # N iterations time error
+30  100 2000 0.25218 -1.00000e+00 # N iterations time error
+31  100 2000 0.24819 -1.00000e+00 # N iterations time error
+32  100 2000 0.23819 -1.00000e+00 # N iterations time error

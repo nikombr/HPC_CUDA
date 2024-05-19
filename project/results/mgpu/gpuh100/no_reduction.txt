@@ -1,0 +1,13 @@
+Rank 0:
+ 	(kstart, kend) = (1,25)
+	I have peer-access to next device!
+	I can see 2 devices!
+Rank 1:
+ 	(kstart, kend) = (26,50)
+	I have peer-access to previous device!
+50 2000 0.46523 0.46554 -1.00000e+00 # N iterations time transfer_time error
+50 2000 0.47679 0.47729 -1.00000e+00 # N iterations time transfer_time error
+Rank 0:
+ 	(kstart, kend) = (1,50)
+	I can see 2 devices!
+50 2000 0.51791 0.51818 -1.00000e+00 # N iterations time transfer_time error

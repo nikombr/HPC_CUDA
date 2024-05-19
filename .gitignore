@@ -8,3 +8,5 @@
 *.m
 *.py
 *.o
+mpi_hello_world/*
+trash/*

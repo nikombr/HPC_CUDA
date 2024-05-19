@@ -2,57 +2,121 @@
 
 TARGET_CPU_NO_REDUCTION  	= cpu_no_reduction		# Not computing the error for convergence check
 TARGET_CPU_REDUCTION 		= cpu_reduction			# Computing the error for convergence check
+TARGET_GPU_NO_REDUCTION  	= gpu_no_reduction		# Not computing the error for convergence check
+TARGET_GPU_REDUCTION 		= gpu_reduction			# Computing the error for convergence check
+TARGET_GPU_REDUCTION_ATOMIC = gpu_reduction_atomic	# Computing the error for convergence check
+TARGET_MGPU_NO_REDUCTION 	= mgpu_no_reduction		# Computing the error for convergence check
 
-SOURCES	= main.c ../src/utils/print.c ../src/utils/malloc3d.c ../src/utils/init.c ../src/utils/dumpOutput.c
-OBJECTS	= ../src/utils/print.o ../src/utils/malloc3d.o ../src/utils/init.o ../src/utils/dumpOutput.o
+UTILS = ../src/utils/
+
+SOURCES	= main.cpp $(UTILS)print.cu $(UTILS)malloc3d.cu $(UTILS)dumpOutput.cu $(UTILS)cudaMalloc3d.cu $(UTILS)poisson.cpp $(UTILS)alloc.cpp $(UTILS)setupMultipleGPU.cpp $(UTILS)init.cpp $(UTILS)sendToDevice.cpp $(UTILS)sendToHost.cpp $(UTILS)swapArrays.cpp $(UTILS)finalize.cpp
+OBJECTS	= 		   $(UTILS)print.o  $(UTILS)malloc3d.o  $(UTILS)dumpOutput.o  $(UTILS)cudaMalloc3d.o  $(UTILS)poisson.o   $(UTILS)alloc.o   $(UTILS)setupMultipleGPU.o   $(UTILS)init.o   $(UTILS)sendToDevice.o   $(UTILS)sendToHost.o   $(UTILS)swapArrays.o   $(UTILS)finalize.o
 
 CPUFOLDER = ../src/cpu/
+GPUFOLDER = ../src/gpu/
+MGPUFOLDER = ../src/mgpu/
 
-MAIN_CPU_NO_REDUCTION		= cpu_no_reduction.o
-MAIN_CPU_REDUCTION 			= cpu_reduction.o
-
-OBJS_CPU_NO_REDUCTION		= $(MAIN_CPU_NO_REDUCTION) 		$(CPUFOLDER)no_reduction.o $(CPUFOLDER)call.o
-OBJS_CPU_REDUCTION			= $(MAIN_CPU_REDUCTION) 		$(CPUFOLDER)reduction.o $(CPUFOLDER)call.o
+OBJS_CPU_NO_REDUCTION		= main.o 	$(CPUFOLDER)no_reduction.o 		$(CPUFOLDER)call.o
+OBJS_CPU_REDUCTION			= main.o 	$(CPUFOLDER)reduction.o 		$(CPUFOLDER)call.o
+OBJS_GPU_NO_REDUCTION		= main.o 	$(GPUFOLDER)no_reduction/jacobi.o 		$(GPUFOLDER)call.o $(GPUFOLDER)no_reduction/iteration.o
+OBJS_GPU_REDUCTION			= main.o 	$(GPUFOLDER)reduction/jacobi.o 		$(GPUFOLDER)call.o $(GPUFOLDER)reduction/iteration.o
+OBJS_GPU_REDUCTION_ATOMIC	= main.o 	$(GPUFOLDER)reduction_atomic/jacobi.o 	$(GPUFOLDER)call.o $(GPUFOLDER)reduction_atomic/iteration.o
+OBJS_MGPU_NO_REDUCTION		= main2.o 	$(MGPUFOLDER)no_reduction.o 	$(MGPUFOLDER)call.o $(MGPUFOLDER)iteration.o
 
 # options and settings for the GCC compilers
 
 CC		= gcc
+CCC		= g++
+CXX		= nvcc
+MPICC	= mpicc
 DEFS	= 
-OPT		= -g -O3 -fopenmp
+OPT		= -g -O3
 IPO		= 
 ISA		= 
 CHIP	= 
 ARCH	= 
-PARA	= 
-CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) $(XOPTS)
-LDFLAGS = -lm 
+PARA	= -fopenmp
+XOPTS 	= -Xptxas=-v -arch=sm_90 -lineinfo -diag-suppress 2464 -diag-suppress 68  -diag-suppress 177 # Suppressing error regarding string conversion
+CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) 
+CXXFLAGS= --compiler-options "$(OPT) $(PARA)" $(XOPTS)
+LDFLAGS = -lm $(INCLUDES) $(SOFLAGS) $(XLIBS)
+LIBS	= 
+CUDA_PATH ?= /appl/cuda/12.2.0
+INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/Common
+SOFLAGS = -L$(CUDA_PATH)/lib64  -L/appl/nccl/2.17.1-1-cuda-12.1/lib
+XLIBS =  -lcudart -lnccl
 
-all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) 
+all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION)
+
+main.o: main.cpp
+	$(MPICC) -o $@ -D_CPU_GPU $(CFLAGS) -c $<
+
+main2.o: main.cpp
+	$(MPICC) -o $@ -D_MGPU $(CFLAGS) -c $<
+
+#$(MGPUFOLDER)no_reduction.o : $(MGPUFOLDER)no_reduction.cpp
+#	$(MPICC) -o $@ $(CFLAGS) -c $^
+
+#$(MGPUFOLDER)call.o : $(MGPUFOLDER)call.cpp
+#	$(MPICC) -o $@ $(CFLAGS) -c $^
+
+
+## CPU
 
 $(TARGET_CPU_REDUCTION): $(OBJECTS) $(OBJS_CPU_REDUCTION)
-	$(CC) -o $@ $(CFLAGS) $(OBJS_CPU_REDUCTION) $(OBJECTS) $(LDFLAGS)
-
-$(MAIN_CPU_REDUCTION):
-	$(CC) -o $@ -D_REDUCTION $(CFLAGS) -c main.c
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(TARGET_CPU_NO_REDUCTION): $(OBJECTS) $(OBJS_CPU_NO_REDUCTION)
-	$(CC) -o $@ $(CFLAGS) $(OBJS_CPU_NO_REDUCTION) $(OBJECTS) $(LDFLAGS)
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-$(MAIN_CPU_NO_REDUCTION):
-	$(CC) -o $@ -D_NO_REDUCTION $(CFLAGS) -c main.c 
+## GPU
+
+$(TARGET_GPU_REDUCTION): $(OBJECTS) $(OBJS_GPU_REDUCTION)
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(TARGET_GPU_NO_REDUCTION): $(OBJECTS) $(OBJS_GPU_NO_REDUCTION)
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+$(TARGET_GPU_REDUCTION_ATOMIC): $(OBJECTS) $(OBJS_GPU_REDUCTION_ATOMIC)
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# MGPU
+
+$(TARGET_MGPU_NO_REDUCTION): $(OBJECTS) $(OBJS_MGPU_NO_REDUCTION)
+	$(MPICC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+
+# Utils
+
+%.o: %.cu
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+
+%.o: %.cpp
+	$(MPICC) -o $@ $(CFLAGS) -c $<
+
+
+
+#iteration.o: iteration.cu
+#	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	@/bin/rm -f core *.o *~
 	@/bin/rm -f core $(CPUFOLDER)*.o
+	@/bin/rm -f core $(GPUFOLDER)*.o
+	@/bin/rm -f core $(GPUFOLDER)/no_reduction/*.o
+	@/bin/rm -f core $(GPUFOLDER)/reduction/*.o
+	@/bin/rm -f core $(GPUFOLDER)/reduction_atomic/*.o
+	@/bin/rm -f core $(MGPUFOLDER)*.o
 	@/bin/rm -f core ../src/utils/*.o
 
 realclean: clean
-	@/bin/rm -f $(TARGET_CPU_NO_REDUCTION)  $(TARGET_CPU_REDUCTION)
+	@/bin/rm -f $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION)
 
-# DO NOT DELETE
+# Dependencies
 
-cpu_no_reduction.o: 		main.c 
-cpu_reduction.o: 			main.c
-../src/utils/print.o: 		../lib/print.h
-../src/utils/dumpOutput.o: 	../lib/print.h ../lib/dumpOutput.h
-../src/cpu/call.o: 			../src/cpu/call.c ../lib/call.h ../lib/jacobi.h ../lib/init.h  ../lib/dumpOutput.h
+# main.o: main.c
+# ../src/utils/malloc3d.o: 	../lib/malloc3d.h
+# ../src/utils/init.o: 	../lib/init.h
+# ../src/utils/print.o: 		../lib/print.h
+# ../src/utils/dumpOutput.o: 	../lib/print.h ../lib/dumpOutput.h
+# ../src/cpu/call.o: 			../src/cpu/call.cu ../lib/call.h ../lib/jacobi.h ../lib/init.h  ../lib/dumpOutput.h
