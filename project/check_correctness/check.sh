@@ -21,7 +21,7 @@ module load nccl/2.19.3-1-cuda-12.2.2
 pip3 install matplotlib
 
 
-ITER=1000
+ITER=10000
 N=100
 TOLERANCE=-1
 START_T=5

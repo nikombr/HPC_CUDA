@@ -17,7 +17,7 @@
 } while(0)
 
 void Poisson::jacobi() {
-
+    
     ncclGroupStart();
     ncclUniqueId id;
     if (this->world_rank == 0) ncclGetUniqueId(&id);
@@ -28,23 +28,22 @@ void Poisson::jacobi() {
     cudaStreamCreate(&stream);
     ncclGroupEnd();
     
+    
+    // Get constants for nccl sendings
+    int firstRowReceive = 0;
+    int lastRowSend = (N + 2) * (N + 2) * (width);
+    int firstRowSend = firstRowReceive + (N + 2) * (N + 2);
+    int lastRowReceive = lastRowSend + (N + 2) * (N + 2);
+    double start, stop = 0;
+    ncclGroupStart(); // Start nccl up
     while ((this->n < this->iter_max)) {
-        
         // Do iteration
-        //if (this->world_rank == 0)
-            iteration(this->u_d, this->uold_d, this->f_d, this->N, this->iter_max, this->width);
-
-
-        // Make sure all devices are done
-        //MPI_Barrier(MPI_COMM_WORLD);
-
+        start = omp_get_wtime();
+        iteration(this->u_d, this->uold_d, this->f_d, this->N, this->iter_max, this->width);
+        stop += omp_get_wtime() - start;
         // Send data from different MPI calls with nccl
-        ncclGroupStart(); // Start nccl up
-     
-        int firstRowReceive = 0;
-        int lastRowSend = (N + 2) * (N + 2) * (width);
-        int firstRowSend = firstRowReceive + (N + 2) * (N + 2);
-        int lastRowReceive = lastRowSend + (N + 2) * (N + 2);
+        
+        
         if (this->world_rank == 0) { // We only need to send to and receive from the next device
             // Rank 0 receives data from rank 1
             NCCLCHECK(ncclRecv(this->u_log + lastRowReceive, (N + 2) * (N + 2), ncclDouble, this->world_rank + 1, comm, stream));
@@ -68,16 +67,13 @@ void Poisson::jacobi() {
             NCCLCHECK(ncclSend(this->u_log + lastRowSend,     (N + 2) * (N + 2), ncclDouble, this->world_rank + 1, comm, stream));
 
         }
-        ncclGroupEnd(); // End nccl
-
+        
         // Swap addresses
         this->swapArrays();
-
         // Next iteration
         (this->n)++;
     }
-       
-    
+    ncclGroupEnd(); // End nccl
+    printf("Time = %f\n",stop);
     return;
-
 }

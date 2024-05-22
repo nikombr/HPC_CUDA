@@ -1,13 +1,522 @@
-Rank 0:
- 	(kstart, kend) = (1,25)
-	I have peer-access to next device!
-	I can see 2 devices!
-Rank 1:
- 	(kstart, kend) = (26,50)
-	I have peer-access to previous device!
-50 2000 0.46523 0.46554 -1.00000e+00 # N iterations time transfer_time error
-50 2000 0.47679 0.47729 -1.00000e+00 # N iterations time transfer_time error
-Rank 0:
- 	(kstart, kend) = (1,50)
-	I can see 2 devices!
-50 2000 0.51791 0.51818 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.032663
+Time = 0.037734
+Time = 0.037268
+Time = 0.032051
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+10 4000 0.34885 0.38940 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.038542
+Time = 0.032973
+Time = 0.034772
+Time = 0.040929
+Time = 0.000000
+Time = 0.000000
+20 4000 0.33161 0.36317 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.000000
+Time = 0.000000
+Time = 0.039161
+Time = 0.033411
+Time = 0.033471
+Time = 0.038876
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+30 4000 0.31376 0.35211 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.033988
+Time = 0.040067
+Time = 0.040444
+Time = 0.034401
+Time = 0.000000
+Time = 0.000000
+40 4000 0.33389 0.37230 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.000000
+Time = 0.000000
+Time = 0.039936
+Time = 0.033905
+Time = 0.034361
+Time = 0.039799
+Time = 0.000000
+Time = 0.000000
+50 4000 0.26441 0.39300 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.000000
+Time = 0.000000
+Time = 0.033975
+Time = 0.040055
+Time = 0.040081
+Time = 0.034432
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+60 4000 0.25063 0.39365 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.037887
+Time = 0.041572
+Time = 0.034906
+Time = 0.040904
+Time = 0.000000
+Time = 0.000000
+70 4000 0.25484 0.39349 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.000000
+Time = 0.000000
+Time = 0.037214
+Time = 0.044749
+Time = 0.037769
+Time = 0.045757
+Time = 0.000000
+Time = 0.000000
+80 4000 0.28139 0.43581 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.000000
+Time = 0.000000
+Time = 0.037669
+Time = 0.043701
+Time = 0.037967
+Time = 0.043280
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+90 4000 0.28603 0.46824 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.045459
+Time = 0.049589
+Time = 0.045630
+Time = 0.050389
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+100 4000 0.31644 0.53428 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.045011
+Time = 0.050671
+Time = 0.050699
+Time = 0.044840
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+110 4000 0.33907 0.56968 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.046865
+Time = 0.054937
+Time = 0.051355
+Time = 0.053739
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+120 4000 0.34519 0.62732 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.059237
+Time = 0.054455
+Time = 0.055408
+Time = 0.059772
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+130 4000 0.31108 0.59115 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.057060
+Time = 0.062800
+Time = 0.063943
+Time = 0.057765
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+140 4000 0.26577 0.59975 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.064490
+Time = 0.066853
+Time = 0.061651
+Time = 0.067540
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+150 4000 0.29618 0.71817 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.076085
+Time = 0.074477
+Time = 0.075487
+Time = 0.069114
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+160 4000 0.30775 0.80699 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.087453
+Time = 0.089413
+Time = 0.082400
+Time = 0.087753
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+170 4000 0.27268 0.85279 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.112689
+Time = 0.106605
+Time = 0.108195
+Time = 0.113497
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+180 4000 0.28823 0.92869 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.141530
+Time = 0.141391
+Time = 0.135036
+Time = 0.141311
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+190 4000 0.25708 0.97295 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.163082
+Time = 0.169258
+Time = 0.169975
+Time = 0.163889
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+200 4000 0.30271 1.13486 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.187186
+Time = 0.186454
+Time = 0.181518
+Time = 0.187410
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+210 4000 0.26048 1.11404 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.207328
+Time = 0.207802
+Time = 0.208248
+Time = 0.202550
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+220 4000 0.27141 1.13814 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.237602
+Time = 0.236723
+Time = 0.238092
+Time = 0.238014
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+230 4000 0.26752 1.33455 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.259853
+Time = 0.255267
+Time = 0.255775
+Time = 0.260357
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+240 4000 0.25796 1.20589 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.289520
+Time = 0.285861
+Time = 0.282286
+Time = 0.286674
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+250 4000 0.24509 1.34732 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.324037
+Time = 0.318198
+Time = 0.318915
+Time = 0.324167
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+260 4000 0.25974 1.54835 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.360545
+Time = 0.355090
+Time = 0.354929
+Time = 0.354750
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+270 4000 0.31339 1.69689 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.391406
+Time = 0.386777
+Time = 0.387445
+Time = 0.387550
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+280 4000 0.38358 1.87799 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.437703
+Time = 0.431679
+Time = 0.430367
+Time = 0.431909
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+290 4000 0.29409 1.88952 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.466766
+Time = 0.472244
+Time = 0.471346
+Time = 0.467335
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+300 4000 0.30203 1.93321 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.511834
+Time = 0.518040
+Time = 0.511912
+Time = 0.509192
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+310 4000 0.29573 2.33831 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.552248
+Time = 0.556510
+Time = 0.558533
+Time = 0.553664
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+320 4000 0.29813 2.24883 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.604204
+Time = 0.617020
+Time = 0.605586
+Time = 0.606631
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+330 4000 0.27841 2.28571 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.665377
+Time = 0.660884
+Time = 0.662054
+Time = 0.664527
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+340 4000 0.31011 2.50195 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.736038
+Time = 0.718106
+Time = 0.718807
+Time = 0.714190
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+350 4000 0.26969 2.35778 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.781529
+Time = 0.778467
+Time = 0.782729
+Time = 0.779048
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+360 4000 0.29863 2.51850 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.840902
+Time = 0.854021
+Time = 0.839564
+Time = 0.839060
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+370 4000 0.24923 2.57969 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.905901
+Time = 0.909648
+Time = 0.913001
+Time = 0.911880
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+380 4000 0.29601 2.76006 -1.00000e+00 # N iterations time transfer_time error
+Time = 0.987113
+Time = 1.002738
+Time = 0.984843
+Time = 0.990408
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+390 4000 0.24248 2.85868 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.057548
+Time = 1.053751
+Time = 1.055791
+Time = 1.058417
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+400 4000 0.27673 3.03126 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.131223
+Time = 1.148667
+Time = 1.132189
+Time = 1.132899
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+410 4000 0.34506 3.07490 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.225518
+Time = 1.222380
+Time = 1.223610
+Time = 1.229016
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+420 4000 0.26798 3.10994 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.328755
+Time = 1.300290
+Time = 1.306031
+Time = 1.303338
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+430 4000 0.25638 3.27933 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.384551
+Time = 1.389845
+Time = 1.391375
+Time = 1.384935
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+440 4000 0.28145 3.27981 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.474792
+Time = 1.500774
+Time = 1.476686
+Time = 1.481506
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+450 4000 0.26926 3.52341 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.585967
+Time = 1.585399
+Time = 1.587442
+Time = 1.592455
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+460 4000 0.29633 3.67264 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.717511
+Time = 1.695001
+Time = 1.693396
+Time = 1.697355
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+470 4000 0.32658 3.89133 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.805745
+Time = 1.806617
+Time = 1.806351
+Time = 1.805399
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+480 4000 0.24331 3.72273 -1.00000e+00 # N iterations time transfer_time error
+Time = 1.929747
+Time = 1.959516
+Time = 1.931367
+Time = 1.936059
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+490 4000 0.27392 4.06765 -1.00000e+00 # N iterations time transfer_time error
+Time = 2.055472
+Time = 2.053654
+Time = 2.063493
+Time = 2.058889
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+500 4000 0.24835 4.08127 -1.00000e+00 # N iterations time transfer_time error
+Time = 2.340957
+Time = 2.347388
+Time = 2.345592
+Time = 2.347107
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+520 4000 0.28581 4.55414 -1.00000e+00 # N iterations time transfer_time error
+Time = 2.663561
+Time = 2.665268
+Time = 2.668421
+Time = 2.674529
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+540 4000 0.26591 5.91333 -1.00000e+00 # N iterations time transfer_time error
+Time = 3.020911
+Time = 3.016777
+Time = 3.018984
+Time = 3.027244
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+560 4000 0.31407 6.25516 -1.00000e+00 # N iterations time transfer_time error
+Time = 3.418799
+Time = 3.428593
+Time = 3.420293
+Time = 3.430262
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+580 4000 0.31253 7.08266 -1.00000e+00 # N iterations time transfer_time error
+Time = 3.778742
+Time = 3.789139
+Time = 3.793041
+Time = 3.783124
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+600 4000 0.28393 7.36005 -1.00000e+00 # N iterations time transfer_time error
+Time = 4.490158
+Time = 4.414780
+Time = 4.426524
+Time = 4.415340
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+630 4000 0.28260 10.57313 -1.00000e+00 # N iterations time transfer_time error
+Time = 5.149582
+Time = 5.141789
+Time = 5.151008
+Time = 5.160107
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+660 4000 0.29583 9.00147 -1.00000e+00 # N iterations time transfer_time error
+Time = 5.917304
+Time = 5.844262
+Time = 5.858034
+Time = 5.848123
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+Time = 0.000000
+690 4000 0.32525 14.98918 -1.00000e+00 # N iterations time transfer_time error

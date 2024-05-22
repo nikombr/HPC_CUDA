@@ -21,7 +21,9 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     // Initialize matrices on host
     poisson.init();
 
-    // GPU warm-up (missing)
+    // GPU warm-up
+    poisson.sendToDevice();
+    poisson.jacobi();
 
     double start_transfer = omp_get_wtime();
     // Copy matrices to device
