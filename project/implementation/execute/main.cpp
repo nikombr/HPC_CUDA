@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
+#ifdef _NORMAL_MAKE
+    #include <mpi.h>
+#endif
 #include "../lib/call.h"
 /*#ifdef _CPU_GPU
     #include "../lib/call.h"

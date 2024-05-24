@@ -4,7 +4,7 @@
 #include <omp.h>
 #include "../../lib/poisson.h"
 #include <cuda_runtime_api.h>
-#include <mpi.h>
+//#include <mpi.h>
 
 
 void Poisson::sendToHost() {

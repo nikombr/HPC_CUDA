@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <omp.h>
-#include <mpi.h>
+#ifdef _NORMAL_MAKE
+    #include <mpi.h>
+#endif
 #include "../../lib/poisson.h"
 using namespace std;
 
@@ -74,7 +76,7 @@ void Poisson::init() {
         }
     }
 
-
+    #ifdef _NORMAL_MAKE
     if (this->width < this->N) { // Multiple GPUs, send to places
 
         // Get width on different devices
@@ -108,4 +110,5 @@ void Poisson::init() {
             MPI_Recv(**this->f_h, (this->N+2) * (this->N+2) * (this->width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
+    #endif
 }

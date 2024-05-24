@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <omp.h>
-#include <cuda_runtime_api.h>
-#include <mpi.h>
+//#include <cuda_runtime_api.h>
+#ifdef _NORMAL_MAKE
+    #include <mpi.h>
+#endif
 
 #include "../../lib/poisson.h"
 #include "../../lib/malloc3d.h"
@@ -13,6 +15,7 @@
 
 void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
 
+    #ifdef _NORMAL_MAKE
     if (this->GPU && this->width < this->N) {
         
         MPI_Barrier(MPI_COMM_WORLD);
@@ -79,6 +82,7 @@ void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
     }
 
     }
+    #endif
     
 
     // Dump results if wanted (if multiple MPI then only on first)
@@ -88,7 +92,9 @@ void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
 
     // De-allocate memory
     if (this->GPU) {
+        #ifdef _NORMAL_MAKE
         if (this->width != this->N) MPI_Finalize();
+        #endif
         host_free_3d(this->u_h);
         host_free_3d(this->f_h);
         host_free_3d(this->uold_h);

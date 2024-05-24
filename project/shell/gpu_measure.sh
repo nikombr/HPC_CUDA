@@ -4,12 +4,12 @@
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
-#BSUB -W 320 # useable time in minutes
+#BSUB -W 24:00 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 #BSUB -gpu "num=1:mode=exclusive_process"
 
-ITER=4000
+ITER=2000
 TOLERANCE=-1
 START_T=5
 
@@ -17,13 +17,7 @@ START_T=5
 
 ARCH=`uname -m`
 
-module load gcc
 
-module load cuda/12.2.2
-
-module load mpi/5.0.2-gcc-12.3.0-binutils-2.40
-
-module load nccl/2.19.3-1-cuda-12.2.2 
 
 ## make clean
 ## make realclean
@@ -37,6 +31,13 @@ then
 else
     if [[ "$ARCH" == "x86_64" ]]
     then
+        module load gcc
+
+        module load cuda/12.2.2
+
+        module load mpi/5.0.2-gcc-12.3.0-binutils-2.40
+
+        module load nccl/2.19.3-1-cuda-12.2.2 
         GPU="gpuh100"
         THREADS=$(seq 1 1 32)
         echo "Running on gpuh100"

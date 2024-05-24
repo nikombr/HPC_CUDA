@@ -5,15 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-#include <mpi.h>
-#include <cuda_runtime_api.h>
+#ifdef _NORMAL_MAKE
+    #include <mpi.h>
+#endif
+//#include <cuda_runtime_api.h>
 
 
 void Poisson::alloc() {
     if (this->GPU) { // GPU
         // Allocation on host
         if (world_rank == 0) { // Allocate more space, so we can do transfer to rank 0 with all data
-            this->u_h  = host_malloc_3d(this->N+2, this->N+2, this->N+2);
+            this->u_h     = host_malloc_3d(this->N+2, this->N+2, this->N+2);
             this->uold_h  = host_malloc_3d(this->N+2, this->N+2, this->N+2);
             this->f_h     = host_malloc_3d(this->N+2, this->N+2, this->N+2);
         }

@@ -25,7 +25,7 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     double stop = omp_get_wtime() - start;
 
     // Output to command line
-    printf("%d %d %.5f %.5e # N iterations time error\n", poisson.N, poisson.n, stop, poisson.tolerance);
+    printf("%d %d %.5e %.5e # N iterations time error\n", poisson.N, poisson.n, stop, poisson.tolerance);
 
     // Finalize 
     poisson.finalize(output_type, output_ext, extra_str);

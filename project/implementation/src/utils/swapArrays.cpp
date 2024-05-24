@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-#include <mpi.h>
-#include <cuda_runtime_api.h>
+#ifdef _NORMAL_MAKE
+    #include <mpi.h>
+#endif
+//#include <cuda_runtime_api.h>
 #include "../../lib/poisson.h"
 
 

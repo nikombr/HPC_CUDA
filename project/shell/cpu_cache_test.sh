@@ -4,7 +4,7 @@
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
-#BSUB -W 120 # useable time in minutes
+#BSUB -W 500 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 
@@ -18,6 +18,7 @@ ARCH=`uname -m`
 ## make realclean
 ## make
 
+
 if [[ "$ARCH" == "aarch64" ]]
 then
     CPU="gracy"
@@ -26,6 +27,13 @@ then
 else
     if [[ "$ARCH" == "x86_64" ]]
     then
+        module load gcc
+
+        module load cuda/12.2.2
+
+        module load mpi/5.0.2-gcc-12.3.0-binutils-2.40
+
+        module load nccl/2.19.3-1-cuda-12.2.2 
         CPU="gpuh100"
         THREADS="16 32"
         echo "Running on gpuh100"

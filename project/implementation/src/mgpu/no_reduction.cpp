@@ -17,7 +17,9 @@
 } while(0)
 
 void Poisson::jacobi() {
-    
+
+    double start_loop, start, stop = 0;
+    start = omp_get_wtime();
     ncclGroupStart();
     ncclUniqueId id;
     if (this->world_rank == 0) ncclGetUniqueId(&id);
@@ -27,14 +29,14 @@ void Poisson::jacobi() {
     cudaStream_t stream;
     cudaStreamCreate(&stream);
     ncclGroupEnd();
-    
-    
+    this->time_nccl_setup = omp_get_wtime() - start;
+    printf("%f ",stop);
     // Get constants for nccl sendings
     int firstRowReceive = 0;
     int lastRowSend = (N + 2) * (N + 2) * (width);
     int firstRowSend = firstRowReceive + (N + 2) * (N + 2);
     int lastRowReceive = lastRowSend + (N + 2) * (N + 2);
-    double start, stop = 0;
+    start_loop = omp_get_wtime();
     ncclGroupStart(); // Start nccl up
     while ((this->n < this->iter_max)) {
         // Do iteration
@@ -42,8 +44,6 @@ void Poisson::jacobi() {
         iteration(this->u_d, this->uold_d, this->f_d, this->N, this->iter_max, this->width);
         stop += omp_get_wtime() - start;
         // Send data from different MPI calls with nccl
-        
-        
         if (this->world_rank == 0) { // We only need to send to and receive from the next device
             // Rank 0 receives data from rank 1
             NCCLCHECK(ncclRecv(this->u_log + lastRowReceive, (N + 2) * (N + 2), ncclDouble, this->world_rank + 1, comm, stream));
@@ -74,6 +74,7 @@ void Poisson::jacobi() {
         (this->n)++;
     }
     ncclGroupEnd(); // End nccl
-    printf("Time = %f\n",stop);
+    this->time_loop = omp_get_wtime() - start_loop;
+    this->time_iterations = stop;
     return;
 }

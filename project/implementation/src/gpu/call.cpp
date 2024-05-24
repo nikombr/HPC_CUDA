@@ -22,6 +22,9 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     // GPU warm-up
     poisson.sendToDevice();
     poisson.jacobi();
+    poisson.tolerance = tolerance;
+    poisson.n = 0;
+
 
     double start_transfer = omp_get_wtime();
     // Copy matrices to device
@@ -35,7 +38,7 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     // Copy matrix uold back to host
     poisson.sendToHost();
     double stop_transfer = omp_get_wtime() - start_transfer;
-    printf("%d %d %.5f %.5f %.5e # N iterations time transfer_time error\n", poisson.N, poisson.n, stop, stop_transfer, poisson.tolerance);
+    printf("%d %d %.5e %.5e %.5e # N iterations time transfer_time error\n", poisson.N, poisson.n, stop, stop_transfer, poisson.tolerance);
 
     // Finalize 
     poisson.finalize(output_type, output_ext, extra_str);

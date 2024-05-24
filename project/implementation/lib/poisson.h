@@ -30,6 +30,9 @@ class Poisson {
         double *uold_log;
         double *f_log;
         char *output_prefix;
+        double time_nccl_setup = 0;
+        double time_iterations = 0;
+        double time_loop = 0;
         Poisson(int N, int GPU, double start_T, int iter_max, double tolerance);
         void setupMultipleGPU(int print);
         void alloc();
