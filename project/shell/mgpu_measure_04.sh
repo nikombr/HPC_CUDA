@@ -2,11 +2,11 @@
 #BSUB -J mgpu04 # name
 #BSUB -o outfiles/mgpu04_%J.out # output file
 #BSUB -q gpuh100
-#BSUB -n 16 ## cores
+#BSUB -n 64 ## cores
 #BSUB -R "rusage[mem=1GB]" 
 #BSUB -W 500 # useable time in minutes
 ##BSUB -N # send mail when done
-#BSUB -R "span[ptile=8]"
+#BSUB -R "span[ptile=32]"
 #BSUB -gpu "num=2:mode=exclusive_process"
 
 ITER=1000
