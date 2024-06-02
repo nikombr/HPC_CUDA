@@ -31,17 +31,16 @@ class Poisson {
         double *f_log;
         char *output_prefix;
         double time_nccl_setup = 0;
-        double time_iterations = 0;
-        double time_loop = 0;
-        Poisson(int N, int GPU, double start_T, int iter_max, double tolerance);
-        void setupMultipleGPU(int print);
-        void alloc();
-        void init();
-        void sendToDevice();
-        void jacobi();
-        void sendToHost();
-        void swapArrays();
-        void finalize(int output_type, char*output_ext, char *extra_str);
+        double time_nccl_transfer = 0;
+        Poisson(int N, int GPU, double start_T, int iter_max, double tolerance);// Sets default values 
+        void alloc();                                                           // Allocates matrices
+        void init();                                                            // Initializes matrices
+        void jacobi();                                                          // Computes Jacobi-iterations
+        void swapArrays();                                                      // Swaps arrays in jacobi
+        void finalize(int output_type, char*output_ext, char *extra_str);       // Frees matrices, dumps output
+        void sendToDevice();                                                    // Sends matrices to device
+        void sendToHost();                                                      // Sends matrix to host
+        void setupMultipleGPU(int print);                                       // Sets up multiple GPUs and MPI
 };
 
 #endif

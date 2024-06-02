@@ -21,6 +21,7 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
 
     // GPU warm-up
     poisson.sendToDevice();
+    poisson.n = iter_max-30;
     poisson.jacobi();
     poisson.tolerance = tolerance;
     poisson.n = 0;

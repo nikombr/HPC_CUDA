@@ -18,7 +18,7 @@ matrix2 = np.reshape(np.loadtxt(txt2_filename),(N,N,N))
 
 
 
-if num == 5:
+if num == 5 or num == 6:
     fig, axs = plt.subplots(1,3)
     plot1 = axs[0].imshow(matrix1[N//2,:,:])
     axs[0].set_xlabel('k')

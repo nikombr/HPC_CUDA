@@ -22,7 +22,7 @@ pip3 install matplotlib
 
 
 ITER=4000
-N=100
+N=20
 TOLERANCE=-1
 START_T=5
 

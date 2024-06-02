@@ -29,9 +29,9 @@ void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
                 widthsum += tempwidth;
                 MPI_Recv(&tempwidth,  1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 //printf("mpi %d: tempwidth = %d, widthsum = %d \n",i,tempwidth,widthsum);
-                MPI_Recv(**this->uold_h + (this->N+2) * (this->N+2) * widthsum, (this->N+2) * (this->N+2) * (tempwidth), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(**this->uold_h + (this->N+2) * (this->N+2) * widthsum, (this->N+2) * (this->N+2) * (tempwidth+1), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-                MPI_Recv(**this->uold_h + (this->N+2) * (this->N+2) * widthsum, (this->N+2) * (this->N+2) * (tempwidth), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(**this->uold_h + (this->N+2) * (this->N+2) * widthsum, (this->N+2) * (this->N+2) * (tempwidth+1), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
 
             
@@ -39,8 +39,8 @@ void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
         else {
             //printf("i am sending width = %d from mpi 1\n",this->width);
             MPI_Send(&this->width, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-            MPI_Send(**this->uold_h + (this->N + 2) * (this->N + 2), (this->N + 2) * (this->N + 2) * (this->width), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-            MPI_Send(**this->uold_h + (this->N + 2) * (this->N + 2), (this->N + 2) * (this->N + 2) * (this->width), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+            MPI_Send(**this->uold_h + (this->N + 2) * (this->N + 2), (this->N + 2) * (this->N + 2) * (this->width+1), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+            MPI_Send(**this->uold_h + (this->N + 2) * (this->N + 2), (this->N + 2) * (this->N + 2) * (this->width+1), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         MPI_Barrier(MPI_COMM_WORLD);
 

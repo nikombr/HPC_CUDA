@@ -5,7 +5,8 @@ TARGET_CPU_REDUCTION 		= cpu_reduction			# Computing the error for convergence c
 TARGET_GPU_NO_REDUCTION  	= gpu_no_reduction		# Not computing the error for convergence check
 TARGET_GPU_REDUCTION 		= gpu_reduction			# Computing the error for convergence check
 TARGET_GPU_REDUCTION_ATOMIC = gpu_reduction_atomic	# Computing the error for convergence check
-TARGET_MGPU_NO_REDUCTION 	= mgpu_no_reduction		# Computing the error for convergence check
+TARGET_MGPU_NO_REDUCTION 	= mgpu_no_reduction		# Not computing the error for convergence check
+TARGET_MGPU_REDUCTION 		= mgpu_reduction		# Computing the error for convergence check
 
 UTILS = ../src/utils/
 
@@ -16,12 +17,13 @@ CPUFOLDER = ../src/cpu/
 GPUFOLDER = ../src/gpu/
 MGPUFOLDER = ../src/mgpu/
 
-OBJS_CPU_NO_REDUCTION		= main.o 	$(CPUFOLDER)no_reduction.o 		$(CPUFOLDER)call.o
-OBJS_CPU_REDUCTION			= main.o 	$(CPUFOLDER)reduction.o 		$(CPUFOLDER)call.o
-OBJS_GPU_NO_REDUCTION		= main.o 	$(GPUFOLDER)no_reduction/jacobi.o 		$(GPUFOLDER)call.o $(GPUFOLDER)no_reduction/iteration.o
-OBJS_GPU_REDUCTION			= main.o 	$(GPUFOLDER)reduction/jacobi.o 		$(GPUFOLDER)call.o $(GPUFOLDER)reduction/iteration.o
-OBJS_GPU_REDUCTION_ATOMIC	= main.o 	$(GPUFOLDER)reduction_atomic/jacobi.o 	$(GPUFOLDER)call.o $(GPUFOLDER)reduction_atomic/iteration.o
-OBJS_MGPU_NO_REDUCTION		= main2.o 	$(MGPUFOLDER)no_reduction.o 	$(MGPUFOLDER)call.o $(MGPUFOLDER)iteration.o
+OBJS_CPU_NO_REDUCTION		= main.o 	$(CPUFOLDER)no_reduction.o 				$(CPUFOLDER)call.o
+OBJS_CPU_REDUCTION			= main.o 	$(CPUFOLDER)reduction.o 				$(CPUFOLDER)call.o
+OBJS_GPU_NO_REDUCTION		= main.o 	$(GPUFOLDER)no_reduction/jacobi.o 		$(GPUFOLDER)call.o  $(GPUFOLDER)no_reduction/iteration.o
+OBJS_GPU_REDUCTION			= main.o 	$(GPUFOLDER)reduction/jacobi.o 			$(GPUFOLDER)call.o  $(GPUFOLDER)reduction/iteration.o
+OBJS_GPU_REDUCTION_ATOMIC	= main.o 	$(GPUFOLDER)reduction_atomic/jacobi.o 	$(GPUFOLDER)call.o  $(GPUFOLDER)reduction_atomic/iteration.o
+OBJS_MGPU_NO_REDUCTION		= main2.o 	$(MGPUFOLDER)no_reduction/jacobi.o 		$(MGPUFOLDER)call.o $(MGPUFOLDER)no_reduction/iteration.o
+OBJS_MGPU_REDUCTION			= main2.o 	$(MGPUFOLDER)reduction/jacobi.o 		$(MGPUFOLDER)call.o $(MGPUFOLDER)reduction/iteration.o
 
 # options and settings for the GCC compilers
 
@@ -42,11 +44,11 @@ CXXFLAGS= --compiler-options "$(OPT) $(PARA)" $(XOPTS)
 LDFLAGS = -lm $(INCLUDES) $(SOFLAGS) $(XLIBS)
 LIBS	= 
 CUDA_PATH ?= /appl/cuda/12.2.0
-INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/Common
+INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/Common 
 SOFLAGS = -L$(CUDA_PATH)/lib64  -L/appl/nccl/2.17.1-1-cuda-12.1/lib
 XLIBS =  -lcudart -lnccl
 
-all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION)
+all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION) $(TARGET_MGPU_REDUCTION)
 
 main.o: main.cpp
 	$(MPICC) -o $@ -D_CPU_GPU $(CFLAGS) -c $<
@@ -78,18 +80,17 @@ $(TARGET_GPU_REDUCTION_ATOMIC): $(OBJECTS) $(OBJS_GPU_REDUCTION_ATOMIC)
 $(TARGET_MGPU_NO_REDUCTION): $(OBJECTS) $(OBJS_MGPU_NO_REDUCTION)
 	$(MPICC) $(CFLAGS) -o $@ -D_NORMAL_MAKE $^ $(LDFLAGS)
 
+$(TARGET_MGPU_REDUCTION): $(OBJECTS) $(OBJS_MGPU_REDUCTION)
+	$(MPICC) $(CFLAGS) -o $@ -D_NORMAL_MAKE $^ $(LDFLAGS)
+
 # Utils
 
 %.o: %.cu
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -D_NORMAL_MAKE -c $<
 
 %.o: %.cpp
-	$(MPICC) -o $@ $(CFLAGS) -c $<
+	$(MPICC) -o $@ -D_NORMAL_MAKE $(CFLAGS) -c $<
 
-
-
-#iteration.o: iteration.cu
-#	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	@/bin/rm -f core *.o *~
@@ -99,10 +100,12 @@ clean:
 	@/bin/rm -f core $(GPUFOLDER)/reduction/*.o
 	@/bin/rm -f core $(GPUFOLDER)/reduction_atomic/*.o
 	@/bin/rm -f core $(MGPUFOLDER)*.o
+	@/bin/rm -f core $(MGPUFOLDER)/no_reduction/*.o
+	@/bin/rm -f core $(MGPUFOLDER)/reduction/*.o
 	@/bin/rm -f core ../src/utils/*.o
 
 realclean: clean
-	@/bin/rm -f $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION)
+	@/bin/rm -f $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION) $(TARGET_MGPU_REDUCTION)
 
 # Dependencies
 

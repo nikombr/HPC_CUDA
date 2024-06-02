@@ -8,7 +8,6 @@
 #ifdef _NORMAL_MAKE
     #include <mpi.h>
 #endif
-//#include <cuda_runtime_api.h>
 
 
 void Poisson::alloc() {

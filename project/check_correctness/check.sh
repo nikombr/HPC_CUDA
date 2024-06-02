@@ -21,7 +21,7 @@ module load nccl/2.19.3-1-cuda-12.2.2
 pip3 install matplotlib
 
 
-ITER=10000
+ITER=3000
 N=100
 TOLERANCE=-1
 START_T=5
@@ -50,8 +50,12 @@ echo "GPU, reduction (atomic)"
 
 echo ""
 echo "MGPU, no reduction"
-## NCCL_DEBUG=INFO mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2 # Reduction, atomic add
-mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2 # Reduction, atomic add
+## NCCL_DEBUG=INFO mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2
+mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2 # No reduction
+
+echo ""
+echo "MGPU, reduction"
+mpirun -npernode 2 ./../implementation/execute/mgpu_reduction $N $ITER $TOLERANCE $START_T 3 1 # Reduction
 
 echo ""
 echo ""
@@ -63,6 +67,7 @@ python3 ./binary_cmp.py results/poisson_cpu_${N}_no_reduction results/poisson_gp
 python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction results/poisson_cpu_${N}_reduction 3
 python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction_atomic results/poisson_cpu_${N}_reduction 4
 python3 ./binary_cmp.py results/poisson_mgpu_${N}_no_reduction results/poisson_cpu_${N}_reduction 5
+python3 ./binary_cmp.py results/poisson_mgpu_${N}_reduction results/poisson_cpu_${N}_reduction 6
 
 exit 0
 

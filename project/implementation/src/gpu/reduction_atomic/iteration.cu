@@ -23,8 +23,8 @@ __global__ void iteration_inner(double *** u, double *** uold, double *** f, int
 void iteration(double *** u, double *** uold, double *** f, int N, int iter_max, double *sum) {
 
     // Blocks and threads
-    dim3 dimBlock(32,8,4);
-    dim3 dimGrid(((N+2)+dimBlock.x-1)/dimBlock.x,((N+2)+dimBlock.y-1)/dimBlock.y,((N+2)+dimBlock.z-1)/dimBlock.z);
+    dim3 dimBlock(32,4,2);
+    dim3 dimGrid(((N+1)+dimBlock.x-1)/dimBlock.x,((N+1)+dimBlock.y-1)/dimBlock.y,((N+1)+dimBlock.z-1)/dimBlock.z);
 
     // Do iteration
     iteration_inner<<<dimGrid, dimBlock>>>(u, uold, f, N, iter_max, sum);

@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-#ifdef _NORMAL_MAKE
-    #include <mpi.h>
-#endif
-//#include <cuda_runtime_api.h>
 #include "../../lib/poisson.h"
 
 
@@ -27,6 +23,4 @@ void Poisson::swapArrays() {
         this->uold_h = tmp;
 
     }
-
-
 }

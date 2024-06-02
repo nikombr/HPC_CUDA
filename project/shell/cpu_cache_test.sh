@@ -8,7 +8,7 @@
 ##BSUB -N # send mail when done
 #BSUB -R "span[hosts=1]"
 
-ITER=2000
+ITER=1000
 TOLERANCE=-1
 START_T=5
 
@@ -57,7 +57,8 @@ do
     rm -rf $FILE_REDUCTION
     rm -rf $FILE_NO_REDUCTION
 
-    for N in {10..500..10} {520..600..20} {630..690..30};
+    ##for N in {10..500..10} {520..600..20} {630..690..30};
+    for N in {10..90..10} {100..200..25} {250..900..50};
     do  
         echo -n $threads " " >> $FILE_REDUCTION
         echo -n $threads " " >> $FILE_NO_REDUCTION

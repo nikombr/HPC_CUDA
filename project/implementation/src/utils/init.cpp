@@ -83,31 +83,29 @@ void Poisson::init() {
         //int *widths = malloc(this->world_size*sizeof(int));
         //widths[0] = this->width;
         
-        MPI_Barrier(MPI_COMM_WORLD);
-        // On mpi call 0, send initialization to the rest
-        if (this->world_rank == 0) {
-            int tempwidth, widthsum;
+        //MPI_Barrier(MPI_COMM_WORLD);
+        if (world_rank == 0) { // On mpi call 0, send initialization to the rest
+            int tempwidth, widthsum = 1;
             tempwidth = this->width;
-            widthsum = 1;
-            //printf("mpi 0: tempwidth = %d, widthsum = %d \n",tempwidth,widthsum);
-            for (int i = 1; i < this->world_size; i++) {
+            for (int i = 1; i < world_size; i++) {
                 widthsum += tempwidth;
-                
                 MPI_Recv(&tempwidth,  1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                //printf("mpi %d: tempwidth = %d, widthsum = %d \n",i,tempwidth,widthsum);
-                MPI_Send(**this->uold_h + (this->N+2) * (this->N+2) * (widthsum - 1), (this->N+2) * (this->N+2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
-                MPI_Send(**this->u_h + (this->N+2) * (this->N+2) * (widthsum - 1), (this->N+2) * (this->N+2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
-                MPI_Send(**this->f_h + (this->N+2) * (this->N+2) * (widthsum - 1), (this->N+2) * (this->N+2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
-
+                MPI_Send(**this->uold_h + (N + 2) * (N + 2) * (widthsum - 1), \
+                                    (N + 2) * (N + 2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+                MPI_Send(**this->u_h    + (N + 2) * (N + 2) * (widthsum - 1), \
+                                    (N + 2) * (N + 2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+                MPI_Send(**this->f_h    + (N + 2) * (N + 2) * (widthsum - 1), \
+                                    (N + 2) * (N + 2) * (tempwidth + 2), MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
             }
-
         }
-        else {
-            
+        else { // On remaining mpi calls, receive initialization to the rest
             MPI_Send(&this->width, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-            MPI_Recv(**this->uold_h, (this->N+2) * (this->N+2) * (this->width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(**this->u_h, (this->N+2) * (this->N+2) * (this->width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(**this->f_h, (this->N+2) * (this->N+2) * (this->width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(**this->uold_h, (N + 2) * (N + 2) * (width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, \
+                                                                                  MPI_STATUS_IGNORE);
+            MPI_Recv(**this->u_h,    (N + 2) * (N + 2) * (width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, \
+                                                                                  MPI_STATUS_IGNORE);
+            MPI_Recv(**this->f_h,    (N + 2) * (N + 2) * (width + 2), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, \
+                                                                                  MPI_STATUS_IGNORE);
         }
     }
     #endif
