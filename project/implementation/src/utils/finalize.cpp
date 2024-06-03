@@ -95,8 +95,8 @@ void Poisson::finalize(int output_type, char*output_ext, char *extra_str) {
         #ifdef _NORMAL_MAKE
         if (this->width != this->N) MPI_Finalize();
         #endif
-        host_free_3d(this->u_h);
-        host_free_3d(this->f_h);
+        //host_free_3d(this->u_h);
+        //host_free_3d(this->f_h);
         host_free_3d(this->uold_h);
         device_free_3d(this->u_d,    this->u_log);
         device_free_3d(this->f_d,    this->f_log);

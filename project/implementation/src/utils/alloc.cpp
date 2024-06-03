@@ -14,19 +14,19 @@ void Poisson::alloc() {
     if (this->GPU) { // GPU
         // Allocation on host
         if (world_rank == 0) { // Allocate more space, so we can do transfer to rank 0 with all data
-            this->u_h     = host_malloc_3d(this->N+2, this->N+2, this->N+2);
-            this->uold_h  = host_malloc_3d(this->N+2, this->N+2, this->N+2);
+            //this->u_h     = host_malloc_3d(this->N+2, this->N+2, this->N+2);
+            //this->uold_h  = host_malloc_3d(this->N+2, this->N+2, this->N+2);
             this->f_h     = host_malloc_3d(this->N+2, this->N+2, this->N+2);
         }
         else {
-            this->u_h     = host_malloc_3d(this->width+2, this->N+2, this->N+2);
+            //this->u_h     = host_malloc_3d(this->width+2, this->N+2, this->N+2);
             this->uold_h  = host_malloc_3d(this->width+2, this->N+2, this->N+2);
             this->f_h     = host_malloc_3d(this->width+2, this->N+2, this->N+2);
         }
         
         
         // Check allocation on host
-        if (this->u_h == NULL || this->uold_h == NULL || this->f_h == NULL) {
+        if (this->f_h == NULL) {
             perror("Allocation failed on host!");
             exit(-1);
         }

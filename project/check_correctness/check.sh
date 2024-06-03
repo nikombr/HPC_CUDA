@@ -22,7 +22,7 @@ pip3 install matplotlib
 
 
 ITER=3000
-N=100
+N=50
 TOLERANCE=-1
 START_T=5
 
@@ -68,6 +68,9 @@ python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction results/poisson_cpu_$
 python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction_atomic results/poisson_cpu_${N}_reduction 4
 python3 ./binary_cmp.py results/poisson_mgpu_${N}_no_reduction results/poisson_cpu_${N}_reduction 5
 python3 ./binary_cmp.py results/poisson_mgpu_${N}_reduction results/poisson_cpu_${N}_reduction 6
+
+
+rm results/*
 
 exit 0
 
