@@ -37,7 +37,7 @@ rm -rf $FILE_NO_REDUCTION
 rm -rf $FILE_REDUCTION
 
 ##for N in {10..500..10} {520..600..20} {630..690..30};
-for N in {10..90..10} {100..200..25} {250..1400..50};
+for N in {10..90..10} {100..200..25} {250..1250..50};
 do
 
     mpirun -npernode 2 ./${EXECUTEFOLDER}mgpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION

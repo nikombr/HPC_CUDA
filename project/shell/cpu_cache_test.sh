@@ -22,7 +22,7 @@ ARCH=`uname -m`
 if [[ "$ARCH" == "aarch64" ]]
 then
     CPU="gracy"
-    THREADS="16 32 64 72"
+    THREADS="32 72"
     echo "Running on gracy :)"
 else
     if [[ "$ARCH" == "x86_64" ]]
@@ -58,7 +58,7 @@ do
     rm -rf $FILE_NO_REDUCTION
 
     ##for N in {10..500..10} {520..600..20} {630..690..30};
-    for N in {10..90..10} {100..200..25} {250..900..50};
+    for N in {10..90..10} {100..200..25} {250..1250..50};
     do  
         echo -n $threads " " >> $FILE_REDUCTION
         echo -n $threads " " >> $FILE_NO_REDUCTION

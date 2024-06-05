@@ -1,8 +1,8 @@
 #!/bin/bash
-#BSUB -J mgpu03 # name
-#BSUB -o outfiles/mgpu03_%J.out # output file
+#BSUB -J mgpu05 # name
+#BSUB -o outfiles/mgpu05_%J.out # output file
 #BSUB -q gpuh100
-#BSUB -n 64 ## cores
+#BSUB -n 96 ## cores
 #BSUB -R "rusage[mem=1GB]" 
 #BSUB -W 500 # useable time in minutes
 ##BSUB -N # send mail when done
@@ -30,8 +30,8 @@ echo "Running on gpuh100"
 FOLDER="../results/mgpu"
 EXECUTEFOLDER="../implementation/execute/"
 
-FILE_NO_REDUCTION=$FOLDER/no_reduction/result03.txt
-FILE_REDUCTION=$FOLDER/reduction/result03.txt
+FILE_NO_REDUCTION=$FOLDER/no_reduction/result06.txt
+FILE_REDUCTION=$FOLDER/reduction/result06.txt
 
 rm -rf $FILE_NO_REDUCTION
 rm -rf $FILE_REDUCTION
