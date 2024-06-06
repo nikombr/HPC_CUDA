@@ -30,4 +30,3 @@
 16  1000 1000 2.75247e+02 -1.00000e+00 # N iterations time error
 16  1050 1000 3.19111e+02 -1.00000e+00 # N iterations time error
 16  1100 1000 3.67160e+02 -1.00000e+00 # N iterations time error
-16  16  16  

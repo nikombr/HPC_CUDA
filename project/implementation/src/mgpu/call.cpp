@@ -70,7 +70,7 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
             tempsum += temp;
         }
         printf("%.5e ", tempsum/poisson.world_size);
-        //printf("%.5e ", poisson.time_nccl_transfer);
+        //printf("t%.5e ", poisson.time_nccl_transfer);
         tempsum = poisson.time_nccl_transfer;
         for (int i = 1; i < poisson.world_size; i++) {
             MPI_Recv(&temp,  1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);

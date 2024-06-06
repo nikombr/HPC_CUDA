@@ -68,10 +68,10 @@ void Poisson::jacobi() {
             NCCLCHECK(ncclRecv(this->u_log + lastRowReceive,  (N + 2) * (N + 2), ncclDouble, this->world_rank + 1, comm, stream));
             // Rank i sends data to rank i + 1
             NCCLCHECK(ncclSend(this->u_log + lastRowSend,     (N + 2) * (N + 2), ncclDouble, this->world_rank + 1, comm, stream));
-
         }
         ncclGroupEnd(); // End nccl
         stop += omp_get_wtime() - start;
+        
         
         
         // Swap addresses
