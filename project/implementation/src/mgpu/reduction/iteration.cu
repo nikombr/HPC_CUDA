@@ -78,6 +78,7 @@ void iteration(double *** u, double *** uold, double *** uold_peer, double *** f
     cudaMalloc((void**)&sum_bound, sizeof(double));
     init_zero<<<1, 1, 0, stream>>>(sum);
     init_zero<<<1, 1, 0,stream>>>(sum_bound);
+    cudaStreamSynchronize(stream);
     double delta = 2.0/(N+1), delta2 = delta*delta, frac = 1.0/6.0;
     int end = width - canAccessPeerNext - canAccessPeerPrev;
     // Blocks and threads

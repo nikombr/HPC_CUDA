@@ -44,7 +44,7 @@ __global__ void init_zero(double *res) {
 
 void iteration(double *** u, double *** uold, double *** f, int N, double *sum) {
     init_zero<<<1, 1>>>(sum);
-
+    cudaDeviceSynchronize();
     double delta = 2.0/(N+1), delta2 = delta*delta, frac = 1.0/6.0;
 
     // Blocks and threads

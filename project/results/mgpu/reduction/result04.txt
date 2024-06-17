@@ -31,3 +31,5 @@
 1050 1000 2.10570e+03 2.10603e+03 6.30213e-01 1.07581e+02 2.13797e+02 1.36537e+00 1.58737e+03 # N iterations time transfer_time nccl_setup nccl_transfer error
 1100 1000 2.43287e+03 2.43324e+03 5.44181e-01 1.72750e+01 3.32546e+01 1.29534e+00 1.74458e+03 # N iterations time transfer_time nccl_setup nccl_transfer error
 1150 1000 2.49403e+03 2.49447e+03 6.21505e-01 4.13991e+01 8.12136e+01 1.58460e+00 1.90876e+03 # N iterations time transfer_time nccl_setup nccl_transfer error
+1200 1000 3.14987e+03 3.15037e+03 5.22409e-01 1.45774e+02 1.36799e+00 2.90181e+02 2.08073e+03 # N iterations time transfer_time nccl_setup nccl_transfer error
+1250 1000 3.53338e+03 3.53394e+03 5.93756e-01 1.62557e+02 3.23183e+02 1.93030e+00 2.25922e+03 # N iterations time transfer_time nccl_setup nccl_transfer error

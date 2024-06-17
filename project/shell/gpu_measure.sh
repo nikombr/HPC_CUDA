@@ -47,7 +47,7 @@ else
 fi
 
 FOLDER="../results/gpu/${GPU}"
-EXECUTEFOLDER="../implementation/execute/"
+EXECUTEFOLDER="../implementation_old/execute/"
 
 FILE_REDUCTION=$FOLDER/reduction.txt
 FILE_NO_REDUCTION=$FOLDER/no_reduction.txt
