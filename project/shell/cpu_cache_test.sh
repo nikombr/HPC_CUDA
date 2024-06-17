@@ -44,7 +44,26 @@ else
 fi
 
 FOLDER="../results/cpu/$CPU/cache_test"
+FOLDER2="../results/cpu_spread/$CPU/cache_test"
 EXECUTEFOLDER="../implementation/execute/"
+
+FILE_SPREAD_REDUCTION=$FOLDER2/reduction.txt
+FILE_SPREAD_NO_REDUCTION=$FOLDER2/no_reduction.txt
+
+rm -rf $FILE_SPREAD_REDUCTION
+rm -rf $FILE_SPREAD_NO_REDUCTION
+
+threads=32
+
+for N in {10..90..10} {100..200..25} {250..1250..50};
+do  
+    echo -n $threads " " >> $FILE_SPREAD_REDUCTION
+    echo -n $threads " " >> $FILE_SPREAD_NO_REDUCTION
+    OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=spread OMP_PLACES=cores ./${EXECUTEFOLDER}cpu_reduction $N $ITER $TOLERANCE $START_T >> $FILE_SPREAD_REDUCTION
+    OMP_NUM_THREADS=$threads OMP_SCHEDULE=static OMP_PROC_BIND=spread OMP_PLACES=cores ./${EXECUTEFOLDER}cpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_SPREAD_NO_REDUCTION
+
+done
+exit 0
 
 ## lscpu
 
@@ -67,5 +86,6 @@ do
     
     done
 done
-exit 0
+
+
 

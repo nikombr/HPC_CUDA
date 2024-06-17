@@ -12,24 +12,23 @@ void Poisson::jacobi() {
     
     cudaMallocHost((void **)&sum_h, sizeof(double));
     cudaMalloc((void **)&sum_d, sizeof(double));
-    *sum_h = this->tolerance + 1;
-   
-    //printf("%d, %d, %d\n",dimGrid.x,dimGrid.y,dimGrid.z);
-    while (this->n < iter_max && *sum_h > this->tolerance) {
-        *sum_h = 0.0;
-        cudaMemcpy(sum_d, sum_h, sizeof(double), cudaMemcpyHostToDevice);
+    *sum_h = tolerance + 1;
+    
+    while (n < iter_max && *sum_h > tolerance) {
+        //*sum_h = 0.0;
+        //cudaMemcpy(sum_d, sum_h, sizeof(double), cudaMemcpyHostToDevice);
  
         // Do iteration
-        iteration(this->u_d, this->uold_d, this->f_d, this->N, this->iter_max, sum_d);
+        iteration(deviceData[0].u_d, deviceData[0].uold_d, deviceData[0].f_d, N, sum_d);
 
         cudaMemcpy(sum_h, sum_d, sizeof(double), cudaMemcpyDeviceToHost);
-        //printf("%.5e, %.5e\n",*sum_h,*tolerance);
+        
         // Swap addresses
-        this->swapArrays();
+        swapArrays();
         // Next iteration
-        (this->n)++;
+        n++;
     }
-    this->tolerance = *sum_h;
+    tolerance = *sum_h;
     return;
 
 }

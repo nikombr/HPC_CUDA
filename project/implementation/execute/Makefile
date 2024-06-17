@@ -1,17 +1,18 @@
 # Makefile 
 
-TARGET_CPU_NO_REDUCTION  	= cpu_no_reduction		# Not computing the error for convergence check
-TARGET_CPU_REDUCTION 		= cpu_reduction			# Computing the error for convergence check
-TARGET_GPU_NO_REDUCTION  	= gpu_no_reduction		# Not computing the error for convergence check
-TARGET_GPU_REDUCTION 		= gpu_reduction			# Computing the error for convergence check
-TARGET_GPU_REDUCTION_ATOMIC = gpu_reduction_atomic	# Computing the error for convergence check
-TARGET_MGPU_NO_REDUCTION 	= mgpu_no_reduction		# Not computing the error for convergence check
-TARGET_MGPU_REDUCTION 		= mgpu_reduction		# Computing the error for convergence check
+TARGET_CPU_NO_REDUCTION  		= cpu_no_reduction		# Not computing the error for convergence check
+TARGET_CPU_REDUCTION 			= cpu_reduction			# Computing the error for convergence check
+TARGET_GPU_NO_REDUCTION  		= gpu_no_reduction		# Not computing the error for convergence check
+TARGET_GPU_REDUCTION 			= gpu_reduction			# Computing the error for convergence check
+TARGET_GPU_REDUCTION_ATOMIC 	= gpu_reduction_atomic	# Computing the error for convergence check
+TARGET_MGPU_NO_REDUCTION 		= mgpu_no_reduction		# Not computing the error for convergence check
+TARGET_MGPU_REDUCTION 			= mgpu_reduction		# Computing the error for convergence check
+# TARGET_MGPU_NO_REDUCTION_ASYN 	= mgpu_no_reduction_asyn
 
 UTILS = ../src/utils/
 
-SOURCES	= main.cpp $(UTILS)print.cu $(UTILS)malloc3d.cu $(UTILS)dumpOutput.cu $(UTILS)cudaMalloc3d.cu $(UTILS)poisson.cpp $(UTILS)alloc.cpp $(UTILS)setupMultipleGPU.cpp $(UTILS)init.cpp $(UTILS)sendToDevice.cpp $(UTILS)sendToHost.cpp $(UTILS)swapArrays.cpp $(UTILS)finalize.cpp
-OBJECTS	= 		   $(UTILS)print.o  $(UTILS)malloc3d.o  $(UTILS)dumpOutput.o  $(UTILS)cudaMalloc3d.o  $(UTILS)poisson.o   $(UTILS)alloc.o   $(UTILS)setupMultipleGPU.o   $(UTILS)init.o   $(UTILS)sendToDevice.o   $(UTILS)sendToHost.o   $(UTILS)swapArrays.o   $(UTILS)finalize.o
+SOURCES	= main.cpp $(UTILS)print.cu $(UTILS)malloc3d.cu $(UTILS)dumpOutput.cu $(UTILS)cudaMalloc3d.cu $(UTILS)alloc.cpp $(UTILS)init.cpp $(UTILS)poisson.cpp $(UTILS)setupMultipleGPU.cpp $(UTILS)sendToDevice.cpp $(UTILS)sendToHost.cpp $(UTILS)swapArrays.cpp $(UTILS)finalize.cpp $(UTILS)setup_f_matrix.cpp
+OBJECTS	= 		   $(UTILS)print.o  $(UTILS)malloc3d.o  $(UTILS)dumpOutput.o  $(UTILS)cudaMalloc3d.o  $(UTILS)alloc.o 	$(UTILS)init.o 	 $(UTILS)poisson.o   $(UTILS)setupMultipleGPU.o   $(UTILS)sendToDevice.o   $(UTILS)sendToHost.o   $(UTILS)swapArrays.o   $(UTILS)finalize.o	  $(UTILS)setup_f_matrix.o
 
 CPUFOLDER = ../src/cpu/
 GPUFOLDER = ../src/gpu/
@@ -24,6 +25,7 @@ OBJS_GPU_REDUCTION			= main.o 	$(GPUFOLDER)reduction/jacobi.o 			$(GPUFOLDER)cal
 OBJS_GPU_REDUCTION_ATOMIC	= main.o 	$(GPUFOLDER)reduction_atomic/jacobi.o 	$(GPUFOLDER)call.o  $(GPUFOLDER)reduction_atomic/iteration.o
 OBJS_MGPU_NO_REDUCTION		= main2.o 	$(MGPUFOLDER)no_reduction/jacobi.o 		$(MGPUFOLDER)call.o $(MGPUFOLDER)no_reduction/iteration.o
 OBJS_MGPU_REDUCTION			= main2.o 	$(MGPUFOLDER)reduction/jacobi.o 		$(MGPUFOLDER)call.o $(MGPUFOLDER)reduction/iteration.o
+# OBJS_MGPU_NO_REDUCTION_ASYN	= main2.o 	$(MGPUFOLDER)no_reduction_asyn/jacobi.o $(MGPUFOLDER)call.o $(MGPUFOLDER)no_reduction_asyn/iteration.o
 
 # options and settings for the GCC compilers
 
@@ -39,7 +41,7 @@ CHIP	=
 ARCH	= 
 PARA	= -fopenmp
 XOPTS 	= -Xptxas=-v -arch=sm_90 -lineinfo -diag-suppress 2464 -diag-suppress 68  -diag-suppress 177 # Suppressing error regarding string conversion
-CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) 
+CFLAGS	= $(DEFS) $(ARCH) $(OPT) $(ISA) $(CHIP) $(IPO) $(PARA) -lstdc++
 CXXFLAGS= --compiler-options "$(OPT) $(PARA)" $(XOPTS)
 LDFLAGS = -lm $(INCLUDES) $(SOFLAGS) $(XLIBS)
 LIBS	= 
@@ -48,7 +50,7 @@ INCLUDES = -I$(CUDA_PATH)/include -I$(CUDA_PATH)/samples/Common
 SOFLAGS = -L$(CUDA_PATH)/lib64  -L/appl/nccl/2.17.1-1-cuda-12.1/lib
 XLIBS =  -lcudart -lnccl
 
-all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION) $(TARGET_MGPU_REDUCTION)
+all: $(TARGET_CPU_NO_REDUCTION) $(TARGET_CPU_REDUCTION) $(TARGET_GPU_REDUCTION) $(TARGET_GPU_NO_REDUCTION) $(TARGET_GPU_REDUCTION_ATOMIC) $(TARGET_MGPU_NO_REDUCTION) $(TARGET_MGPU_REDUCTION) # $(TARGET_MGPU_NO_REDUCTION_ASYN)
 
 main.o: main.cpp
 	$(MPICC) -o $@ -D_CPU_GPU $(CFLAGS) -c $<
@@ -82,6 +84,9 @@ $(TARGET_MGPU_NO_REDUCTION): $(OBJECTS) $(OBJS_MGPU_NO_REDUCTION)
 
 $(TARGET_MGPU_REDUCTION): $(OBJECTS) $(OBJS_MGPU_REDUCTION)
 	$(MPICC) $(CFLAGS) -o $@ -D_NORMAL_MAKE $^ $(LDFLAGS)
+
+# $(TARGET_MGPU_NO_REDUCTION_ASYN): $(OBJECTS) $(OBJS_MGPU_NO_REDUCTION_ASYN)
+# 	$(MPICC) $(CFLAGS) -o $@ -D_NORMAL_MAKE $^ $(LDFLAGS)
 
 # Utils
 

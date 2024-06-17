@@ -2,12 +2,12 @@
 #BSUB -J check # name
 #BSUB -o outfiles/check_%J.out # output file
 #BSUB -q gpuh100
-#BSUB -n 16 ## cores
+#BSUB -n 64 ## cores
 #BSUB -R "rusage[mem=1GB]" 
 #BSUB -W 30 # useable time in minutes
 ##BSUB -N # send mail when done
-#BSUB -R "span[ptile=8]"
-#BSUB -gpu "num=2:mode=exclusive_process"
+#BSUB -R "span[ptile=32]"
+#BSUB -gpu "num=1:mode=exclusive_process"
 
 ## Script that tests if the implementations yield the correct result
 
@@ -20,8 +20,7 @@ module load nccl/2.19.3-1-cuda-12.2.2
 
 pip3 install matplotlib
 
-
-ITER=3000
+ITER=200
 N=50
 TOLERANCE=-1
 START_T=5
@@ -51,11 +50,16 @@ echo "GPU, reduction (atomic)"
 echo ""
 echo "MGPU, no reduction"
 ## NCCL_DEBUG=INFO mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2
-mpirun -npernode 2 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2 # No reduction
+## NCCL_P2P_LEVEL=NVL
+NCCL_DEBUG=INFO mpirun -npernode 1 ./../implementation/execute/mgpu_no_reduction $N $ITER $TOLERANCE $START_T 3 2 # No reduction
 
 echo ""
 echo "MGPU, reduction"
-mpirun -npernode 2 ./../implementation/execute/mgpu_reduction $N $ITER $TOLERANCE $START_T 3 1 # Reduction
+mpirun -npernode 1 ./../implementation/execute/mgpu_reduction $N $ITER $TOLERANCE $START_T 3 1 # Reduction
+
+## echo ""
+## echo "MGPU, no reduction, asyncrnouns"
+## mpirun -npernode 1 ./../implementation/execute/mgpu_no_reduction_asyn $N $ITER $TOLERANCE $START_T 3 4 # No reduction
 
 echo ""
 echo ""
@@ -68,6 +72,7 @@ python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction results/poisson_cpu_$
 python3 ./binary_cmp.py results/poisson_gpu_${N}_reduction_atomic results/poisson_cpu_${N}_reduction 4
 python3 ./binary_cmp.py results/poisson_mgpu_${N}_no_reduction results/poisson_cpu_${N}_reduction 5
 python3 ./binary_cmp.py results/poisson_mgpu_${N}_reduction results/poisson_cpu_${N}_reduction 6
+## python3 ./binary_cmp.py results/poisson_mgpu_${N}_no_reduction_asyn results/poisson_cpu_${N}_reduction 7
 
 
 rm results/*

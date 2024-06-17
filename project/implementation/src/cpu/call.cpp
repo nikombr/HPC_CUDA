@@ -13,6 +13,9 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     // Initialize
     Poisson poisson = Poisson(N, false, start_T, iter_max, tolerance);
 
+    // Setup f matrix
+    poisson.setup_f_matrix();
+
     // Allocation
     poisson.alloc();
 

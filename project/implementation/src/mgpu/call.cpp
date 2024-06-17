@@ -14,13 +14,16 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
 
     // Setup multiple GPUs
     poisson.setupMultipleGPU(false);
+    // Setup f matrix
+    poisson.setup_f_matrix();
     
-
     // Allocation
     poisson.alloc();
 
     // Initialize matrices on host
     poisson.init();
+
+    MPI_Barrier(MPI_COMM_WORLD);
 
     // GPU warm-up
     poisson.sendToDevice();
@@ -28,6 +31,8 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
     poisson.jacobi();
     poisson.tolerance = tolerance;
     poisson.n = 0;
+
+    MPI_Barrier(MPI_COMM_WORLD);
 
     double start_transfer = omp_get_wtime();
     // Copy matrices to device
@@ -70,7 +75,7 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
             tempsum += temp;
         }
         printf("%.5e ", tempsum/poisson.world_size);
-        //printf("t%.5e ", poisson.time_nccl_transfer);
+        //printf("%.5e ", poisson.time_nccl_transfer);
         tempsum = poisson.time_nccl_transfer;
         for (int i = 1; i < poisson.world_size; i++) {
             MPI_Recv(&temp,  1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -78,6 +83,12 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
             tempsum += temp;
         }
         printf("%.5e ", tempsum/poisson.world_size);
+        printf("%.5e ", poisson.time_nccl_transfer);
+        tempsum = poisson.time_nccl_transfer;
+        for (int i = 1; i < poisson.world_size; i++) {
+            MPI_Recv(&temp,  1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            printf("%.5e ", temp);
+        }
         printf("%.5e # N iterations time transfer_time nccl_setup nccl_transfer error\n", poisson.tolerance);
     }
     else {
@@ -85,10 +96,10 @@ void call(int N, int output_type, char *output_prefix, char*output_ext, char*ext
         MPI_Send(&stop_transfer, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         MPI_Send(&poisson.time_nccl_setup, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         MPI_Send(&poisson.time_nccl_transfer, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(&poisson.time_nccl_transfer, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
 
     }
     
     // Finalize 
     poisson.finalize(output_type, output_ext, extra_str);
-    //MPI_Finalize();
 }

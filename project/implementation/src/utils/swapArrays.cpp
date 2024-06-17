@@ -8,19 +8,21 @@ void Poisson::swapArrays() {
 
     double ***tmp;
 
-    if (this->GPU) {
+    if (GPU) {
         double *tmp_log;
-        tmp = this->u_d;
-        this->u_d = this->uold_d;
-        this->uold_d = tmp;
-        tmp_log = this->u_log;
-        this->u_log = this->uold_log;
-        this->uold_log = tmp_log;
+        for (int i = 0; i < num_device_per_process; i++) {
+            tmp = deviceData[i].u_d;
+            deviceData[i].u_d = deviceData[i].uold_d;
+            deviceData[i].uold_d = tmp;
+            tmp_log = deviceData[i].u_log;
+            deviceData[i].u_log = deviceData[i].uold_log;
+            deviceData[i].uold_log = tmp_log;
+        }
     }
     else {
-        tmp = this->u_h;
-        this->u_h = this->uold_h;
-        this->uold_h = tmp;
+        tmp = u_h;
+        u_h = uold_h;
+        uold_h = tmp;
 
     }
 }

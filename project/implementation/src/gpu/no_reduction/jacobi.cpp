@@ -7,17 +7,16 @@
 
 void Poisson::jacobi() {
 
-    while (this->n < this->iter_max) {
+    while (n < iter_max) {
         
         // Do iteration
-        iteration(this->u_d, this->uold_d, this->f_d, this->N, this->iter_max);
+        iteration(deviceData[0].u_d, deviceData[0].uold_d, deviceData[0].f_d, N);
 
         // Swap addresses
-        this->swapArrays();
+        swapArrays();
 
         // Next iteration
-        (this->n)++;
-       
+        n++;
     }
     return;
 
