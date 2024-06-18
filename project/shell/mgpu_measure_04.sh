@@ -34,29 +34,20 @@ FILE_NO_REDUCTION=$FOLDER/no_reduction/result04.txt
 ## FILE_NO_REDUCTION_ASYN=$FOLDER/no_reduction_asyn/result04.txt
 FILE_REDUCTION=$FOLDER/reduction/result04.txt
 
-## rm -rf $FILE_NO_REDUCTION
-## rm -rf $FILE_REDUCTION
+rm -rf $FILE_NO_REDUCTION
+rm -rf $FILE_REDUCTION
 ## rm -rf $FILE_NO_REDUCTION_ASYN
 
 ##for N in {10..500..10} {520..600..20} {630..690..30};
 ##for N in {10..90..10} {100..200..25} {250..1250..50};
-##for N in {10..90..10} {100..200..25} {250..1250..50};
-for N in {1050..1250..50};
+for N in {10..90..10} {100..200..25} {250..1250..50};
 do
 
     NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
     ## NCCL_SOCKET_NTHREADS=16 mpirun -npernode 2 ./${EXECUTEFOLDER}mgpu_no_reduction_asyn $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION_ASYN
-    ## NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
-
-done
-
-for N in {1000..1250..50};
-do
-
-    ## NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
-    ## NCCL_SOCKET_NTHREADS=16 mpirun -npernode 2 ./${EXECUTEFOLDER}mgpu_no_reduction_asyn $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION_ASYN
     NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
 
 done
+
 exit 0
 

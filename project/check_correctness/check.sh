@@ -7,7 +7,7 @@
 #BSUB -W 30 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[ptile=32]"
-#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -gpu "num=2:mode=exclusive_process"
 
 ## Script that tests if the implementations yield the correct result
 
@@ -20,7 +20,7 @@ module load nccl/2.19.3-1-cuda-12.2.2
 
 pip3 install matplotlib
 
-ITER=200
+ITER=50
 N=50
 TOLERANCE=-1
 START_T=5

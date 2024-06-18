@@ -22,6 +22,7 @@ void Poisson::jacobi() {
     start = omp_get_wtime();
     ncclComm_t * comms;
     cudaStream_t * streams;
+    streams = (cudaStream_t*) malloc(sizeof(cudaStream_t) * num_device_per_process);
 
     if (world_size > 1) {
         // Setup nccl
@@ -31,7 +32,7 @@ void Poisson::jacobi() {
         MPI_Bcast(&id, sizeof(id), MPI_BYTE, 0, MPI_COMM_WORLD);
         
         comms     = (ncclComm_t*)   malloc(sizeof(ncclComm_t)   * num_device_per_process);
-        streams = (cudaStream_t*) malloc(sizeof(cudaStream_t) * num_device_per_process);
+       
 
         for (int i = 0; i < num_device_per_process; i++) {
             cudaSetDevice(i);
@@ -40,25 +41,32 @@ void Poisson::jacobi() {
         }
         NCCLCHECK(ncclGroupEnd());
     }
+    else {
+        for (int i = 0; i < num_device_per_process; i++) {
+            cudaSetDevice(i);
+            cudaStreamCreate(streams + i);
+        }
+    }
 
     this->time_nccl_setup = omp_get_wtime() - start;
     
     while ((n < iter_max)) {
         // Do iteration
-        //#pragma omp parallel for schedule(static)
+        #pragma omp parallel for num_threads(2)
         for (int i = 0; i < num_device_per_process; i++) {
             cudaSetDevice(i);
-            iteration(deviceData[i].u_d, deviceData[i].uold_d, deviceData[1-i].uold_d, deviceData[i].f_d, N, deviceData[i].width, deviceData[i].peer_width,deviceData[i].canAccesPeerPrev,deviceData[i].canAccesPeerNext);
+            iteration(deviceData[i].u_d, deviceData[i].uold_d, deviceData[1-i].uold_d, deviceData[i].f_d, N, deviceData[i].width, deviceData[i].peer_width,deviceData[i].canAccesPeerPrev,deviceData[i].canAccesPeerNext, streams[i]);
         }
-        for (int i = 0; i < num_device_per_process; i++) {
+
+        for (int i = 0; i < 2; i++) {
             cudaSetDevice(i);
-            cudaDeviceSynchronize();       
+            cudaDeviceSynchronize();
         }
-        
+
         start = omp_get_wtime();
         if (world_size > 1) {
             NCCLCHECK(ncclGroupStart()); // Start nccl up
-            //#pragma omp parallel for schedule(static)
+            #pragma omp parallel for num_threads(2)
             for (int i = 0; i < num_device_per_process; i++) {
                 cudaSetDevice(i);
                 if (deviceData[i].rank > 0 && !deviceData[i].canAccesPeerPrev) {
@@ -75,13 +83,12 @@ void Poisson::jacobi() {
                     // Rank i sends data to rank i + 1
                     NCCLCHECK(ncclSend(deviceData[i].u_log + deviceData[i].lastRowSend,     (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i + 1, comms[i], streams[i]));
                 }
-            }
             NCCLCHECK(ncclGroupEnd()); // End nccl
 
         }
         stop += omp_get_wtime() - start;
         
-    
+        }
         // Swap addresses
         swapArrays();
         // Next iteration

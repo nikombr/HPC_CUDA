@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 //#include "../../lib/info_struct.h"
 //#include "../../lib/poisson.h"
 
@@ -21,7 +22,6 @@ __device__ void reduction(double val, double*res) {
     reg = idx < 32 ? smem[idx] : 0;
     for (int dist = 16; dist > 0; dist /= 2)
         reg += __shfl_down_sync(-1, reg, dist);
-    //if (idx == 0) printf("Reg: %f\n",reg);
     if (idx == 0) atomicAdd(res, reg);
 }
 
@@ -73,11 +73,10 @@ __global__ void add(double *res, double *res_bound) {
     *res += *res_bound;
 }
 
-void iteration(double *** u, double *** uold, double *** uold_peer, double *** f, int N,  double*sum, int width, int peer_width, int canAccessPeerPrev, int canAccessPeerNext,cudaStream_t  stream) {
-    double *sum_bound;
-    cudaMalloc((void**)&sum_bound, sizeof(double));
+void iteration(double *** u, double *** uold, double *** uold_peer, double *** f, int N,  double*sum, double*sum_bound, int width, int peer_width, int canAccessPeerPrev, int canAccessPeerNext,cudaStream_t  stream) {
+    
     init_zero<<<1, 1, 0, stream>>>(sum);
-    init_zero<<<1, 1, 0,stream>>>(sum_bound);
+    init_zero<<<1, 1, 0, stream>>>(sum_bound);
     cudaStreamSynchronize(stream);
     double delta = 2.0/(N+1), delta2 = delta*delta, frac = 1.0/6.0;
     int end = width - canAccessPeerNext - canAccessPeerPrev;
@@ -88,10 +87,10 @@ void iteration(double *** u, double *** uold, double *** uold_peer, double *** f
     dim3 dimGridBound((N+dimBlock.x-1)/dimBlock.x,(N+dimBlock.y-1)/dimBlock.y,1);
     // Kernel calls
     if (canAccessPeerPrev) {
-        iteration_lower_boundary<<<dimGridBound, dimBlockBound,0,stream>>>(u, uold, uold_peer, f, N, peer_width, sum_bound, delta2, frac);
+        iteration_lower_boundary<<<dimGridBound, dimBlockBound, 0, stream>>>(u, uold, uold_peer, f, N, peer_width, sum_bound, delta2, frac);
     }
     else if (canAccessPeerNext) { // In our setting the GPUs can only have peer-acces in one direction
-        iteration_upper_boundary<<<dimGridBound, dimBlockBound,0,stream>>>(u, uold, uold_peer, f, N, width, sum_bound, delta2, frac);
+        iteration_upper_boundary<<<dimGridBound, dimBlockBound, 0, stream>>>(u, uold, uold_peer, f, N, width, sum_bound, delta2, frac);
     }
     iteration_inner<<<dimGrid, dimBlock,0,stream>>>(u, uold, f, N, end, sum, delta2, frac);
     cudaStreamSynchronize(stream);

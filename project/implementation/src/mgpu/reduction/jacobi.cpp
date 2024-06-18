@@ -45,34 +45,48 @@ void Poisson::jacobi() {
             cudaStreamCreate(streams + i);
         }
     }
-
     this->time_nccl_setup = omp_get_wtime() - start;
+    
 
 
     // Setup sum for reduction
-    double  *sum_h, *sum_d_1, *sum_d_2, *sum_bound_h;
+    double  sum_h[2], *sum_d_1, *sum_d_2, *sum_bound_d_1, *sum_bound_d_2;
     double *sum[2], *sum_bound[2];
-    cudaMallocHost((void**)&sum_h, num_device_per_process*sizeof(double));
+    //cudaMallocHost((void**)&sum_h, num_device_per_process*sizeof(double));
+    cudaSetDevice(0);
     cudaMalloc((void**)&sum_d_1, sizeof(double));
+    cudaMalloc((void**)&sum_bound_d_1, sizeof(double));
+    cudaSetDevice(1);
     cudaMalloc((void**)&sum_d_2, sizeof(double));
-    cudaMallocHost((void**)&sum_bound_h, num_device_per_process*sizeof(double));
+    cudaMalloc((void**)&sum_bound_d_2, sizeof(double));
+    //cudaMallocHost((void**)&sum_bound_h, num_device_per_process*sizeof(double));
     sum[0] = sum_d_1;
     sum[1] = sum_d_2;
+    sum_bound[0] = sum_bound_d_1;
+    sum_bound[1] = sum_bound_d_2;
     double tempsum, sum_all;
     sum_all = tolerance + 1;
 
     while (n < iter_max && sum_all > tolerance) {
         sum_all = 0;
-        //#pragma omp parallel for schedule(static)
-        for (int i = 0; i < num_device_per_process; i++) {
+        
+        #pragma omp parallel for num_threads(2)
+        for (int i = 0; i < 2; i++) {
             cudaSetDevice(i);
-            iteration(deviceData[i].u_d, deviceData[i].uold_d, deviceData[1-i].uold_d, deviceData[i].f_d, N, sum[i], deviceData[i].width, deviceData[i].peer_width,deviceData[i].canAccesPeerPrev,deviceData[i].canAccesPeerNext,streams[i]);
+            iteration(deviceData[i].u_d, deviceData[i].uold_d, deviceData[1-i].uold_d, deviceData[i].f_d, N, sum[i], sum_bound[i], deviceData[i].width, deviceData[i].peer_width,deviceData[i].canAccesPeerPrev,deviceData[i].canAccesPeerNext,streams[i]);
+            cudaStreamSynchronize(streams[i]);
             cudaMemcpyAsync(&sum_h[i], sum[i], sizeof(double), cudaMemcpyDeviceToHost, streams[i]);
+        }
+        
+        // Add Frobenenius norm from the two devices
+        for (int i = 0; i < 2; i++) {
+            cudaSetDevice(i);
             cudaDeviceSynchronize();
             sum_all += sum_h[i];
         }
-        
+
         start = omp_get_wtime();
+        // Send Frobenenius norm from different processes
         if (world_size > 1) {
             if (world_rank == 0) {
                 for (int i = 1; i < world_size; i++) {
@@ -86,10 +100,9 @@ void Poisson::jacobi() {
             MPI_Bcast(&sum_all, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         // Send data from different MPI calls with nccl
-       
         if (world_size > 1) {
             NCCLCHECK(ncclGroupStart()); // Start nccl up
-            //#pragma omp parallel for schedule(static)
+            #pragma omp parallel for num_threads(2)
             for (int i = 0; i < num_device_per_process; i++) {
                 cudaSetDevice(i);
                 if (deviceData[i].rank > 0 && !deviceData[i].canAccesPeerPrev) {
@@ -111,6 +124,9 @@ void Poisson::jacobi() {
         }
         stop += omp_get_wtime() - start;
         
+        //stop = omp_get_wtime() - start;
+        //printf("Time = %e\n",stop);
+        //cudaDeviceSynchronize();
         // Swap addresses
         swapArrays();
         // Next iteration
