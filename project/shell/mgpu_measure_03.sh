@@ -4,7 +4,7 @@
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
-#BSUB -W 24:00 # useable time in minutes
+#BSUB -W 1:30 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[ptile=16]"
 #BSUB -gpu "num=1:mode=exclusive_process"

@@ -4,7 +4,7 @@
 #BSUB -q gpuh100
 #BSUB -n 32 ## cores
 #BSUB -R "rusage[mem=1GB]" 
-#BSUB -W 24:00 # useable time in minutes
+#BSUB -W 1:30 # useable time in minutes
 ##BSUB -N # send mail when done
 #BSUB -R "span[ptile=32]"
 #BSUB -gpu "num=2:mode=exclusive_process"
@@ -43,9 +43,9 @@ rm -rf $FILE_REDUCTION
 ##for N in {10..90..10} {100..200..25} {250..1250..50};
 for N in {10..90..10} {100..200..25} {250..1250..50};
 do
-    NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
+    NCCL_SOCKET_NTHREADS=32 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_no_reduction $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION
     ## NCCL_SOCKET_NTHREADS=16 NCCL_CUMEM_ENABLE=0 mpirun -npernode 2 ./${EXECUTEFOLDER}mgpu_no_reduction_asyn $N $ITER $TOLERANCE $START_T >> $FILE_NO_REDUCTION_ASYN
-    NCCL_SOCKET_NTHREADS=16 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
+    NCCL_SOCKET_NTHREADS=32 mpirun -npernode 1 ./${EXECUTEFOLDER}mgpu_reduction $N $ITER $TOLERANCE $START_T >> $FILE_REDUCTION
 done
 
 exit 0

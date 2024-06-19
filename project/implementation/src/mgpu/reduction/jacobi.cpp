@@ -101,9 +101,9 @@ void Poisson::jacobi() {
         }
         // Send data from different MPI calls with nccl
         if (world_size > 1) {
-            NCCLCHECK(ncclGroupStart()); // Start nccl up
             #pragma omp parallel for num_threads(2)
             for (int i = 0; i < num_device_per_process; i++) {
+                NCCLCHECK(ncclGroupStart()); // Start nccl up
                 cudaSetDevice(i);
                 if (deviceData[i].rank > 0 && !deviceData[i].canAccesPeerPrev) {
                     //printf("Lower boundary from %d on MPI-call %d\n",deviceData[i].rank,world_rank);
@@ -119,8 +119,8 @@ void Poisson::jacobi() {
                     // Rank i sends data to rank i + 1
                     NCCLCHECK(ncclSend(deviceData[i].u_log + deviceData[i].lastRowSend,     (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i + 1, comms[i], streams[i]));
                 }
+                NCCLCHECK(ncclGroupEnd()); // End nccl
             }
-            NCCLCHECK(ncclGroupEnd()); // End nccl
         }
         stop += omp_get_wtime() - start;
         

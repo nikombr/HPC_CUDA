@@ -2,6 +2,27 @@
 #include <stdio.h>
 #include <omp.h>
 
+__device__ void reduction(double val, double*res) {
+    // Index of thread
+    int idx = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y;
+    // Reduction
+    double reg = val*val;
+    for (int dist = 16; dist > 0; dist /= 2)
+        reg += __shfl_down_sync(-1, reg, dist);
+    __syncthreads();
+    // Allocate shared memory statically
+    __shared__ double smem[32];
+    memset(smem,0,32*sizeof(double));
+    // Copy to shared memory
+    if (idx % 32 == 0) smem[idx/32] = reg;
+    __syncthreads();
+    // Add the elements in shared memory together
+    reg = idx < 32 ? smem[idx] : 0;
+    for (int dist = 16; dist > 0; dist /= 2)
+        reg += __shfl_down_sync(-1, reg, dist);
+    if (idx == 0) atomicAdd(res, reg);
+}
+
 __global__ void iteration_inner(double *** u, double *** uold, double *** f, int N, double *res, double delta2, double frac) {
     double val = 0;
     int k = threadIdx.x + blockIdx.x * blockDim.x + 1;
@@ -12,30 +33,7 @@ __global__ void iteration_inner(double *** u, double *** uold, double *** f, int
                         + uold[i][j][k+1] + uold[i][j][k-1] + delta2*f[i][j][k]);
         val = u[i][j][k] - uold[i][j][k];
     }
-    
-    // Index of thread
-    int idx = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y;
-
-    // Reduction
-    double reg = val*val;
-    for (int dist = 16; dist > 0; dist /= 2)
-        reg += __shfl_down_sync(-1, reg, dist);
-    __syncthreads();
-
-    // Allocate shared memory statically
-    __shared__ double smem[32];
-
-    // Copy to shared memory
-    if (idx % 32 == 0) smem[idx/32] = reg;
-    __syncthreads();
-
-    // Add the elements in shared memory together
-    reg = idx < 32 ? smem[idx] : 0;
-    for (int dist = 16; dist > 0; dist /= 2)
-        reg += __shfl_down_sync(-1, reg, dist);
-
-    if (idx == 0) atomicAdd(res, reg);
-    
+    reduction(val, res);
 }
 
 __global__ void init_zero(double *res) {

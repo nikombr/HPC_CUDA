@@ -3,6 +3,11 @@
 #include <omp.h>
 #include <cuda_runtime_api.h>
 
+__device__ void reduction(double val, double*res) {
+    double reg = val*val;
+    atomicAdd(res,reg);
+}
+
 __global__ void iteration_inner(double *** u, double *** uold, double *** f, int N, double *res, double delta2, double frac) {
     double val = 0;
     int k = threadIdx.x + blockIdx.x * blockDim.x + 1;
@@ -13,10 +18,7 @@ __global__ void iteration_inner(double *** u, double *** uold, double *** f, int
                         + uold[i][j][k+1] + uold[i][j][k-1] + delta2*f[i][j][k]);
         val = u[i][j][k] - uold[i][j][k];
     }
-
-    double reg = val*val;
-    atomicAdd(res,reg);
-    
+    reduction(val, res);
 }
 
 __global__ void init_zero(double *res) {
@@ -30,7 +32,6 @@ void iteration(double *** u, double *** uold, double *** f, int N, double *sum) 
     // Blocks and threads
     dim3 dimBlock(32,4,2);
     dim3 dimGrid((N+dimBlock.x-1)/dimBlock.x,(N+dimBlock.y-1)/dimBlock.y,(N+dimBlock.z-1)/dimBlock.z);
-
     // Do iteration
     iteration_inner<<<dimGrid, dimBlock>>>(u, uold, f, N, sum, delta2, frac);
     cudaDeviceSynchronize();
