@@ -55,32 +55,34 @@ void Poisson::jacobi() {
             iteration(deviceData[i].u_d, deviceData[i].uold_d, deviceData[1-i].uold_d, deviceData[i].f_d, N, deviceData[i].width, deviceData[i].peer_width,deviceData[i].canAccesPeerPrev,deviceData[i].canAccesPeerNext, streams[i]);
         }
 
-        for (int i = 0; i < 2; i++) {
+        /*for (int i = 0; i < 2; i++) {
             cudaSetDevice(i);
             cudaDeviceSynchronize();
-        }
+        }*/
 
         start = omp_get_wtime();
         if (world_size > 1) {
             #pragma omp parallel for num_threads(2)
             for (int i = 0; i < num_device_per_process; i++) {
-                NCCLCHECK(ncclGroupStart()); // Start nccl up
                 cudaSetDevice(i);
                 if (deviceData[i].rank > 0 && !deviceData[i].canAccesPeerPrev) {
+                    NCCLCHECK(ncclGroupStart()); // Start nccl up
                     //printf("Lower boundary from %d on MPI-call %d\n",deviceData[i].rank,world_rank);
                     // Rank m sends data to rank m - 1
                     NCCLCHECK(ncclSend(deviceData[i].u_log + deviceData[i].firstRowSend,    (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i - 1, comms[i], streams[i]));
                     // Rank m receives data from rank m - 1
                     NCCLCHECK(ncclRecv(deviceData[i].u_log + deviceData[i].firstRowReceive, (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i - 1, comms[i], streams[i]));
+                    NCCLCHECK(ncclGroupEnd()); // End nccl
                 }
                 if (deviceData[i].rank < num_device_per_process * world_size - 1 && !deviceData[i].canAccesPeerNext) {
+                    NCCLCHECK(ncclGroupStart()); // Start nccl up
                     //printf("Upper boundary from %d on MPI-call %d\n",deviceData[i].rank,world_rank);
                     // Rank i receives data from rank i + 1
                     NCCLCHECK(ncclRecv(deviceData[i].u_log + deviceData[i].lastRowReceive,  (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i + 1, comms[i], streams[i]));
                     // Rank i sends data to rank i + 1
                     NCCLCHECK(ncclSend(deviceData[i].u_log + deviceData[i].lastRowSend,     (N + 2) * (N + 2), ncclDouble, world_rank * num_device_per_process + i + 1, comms[i], streams[i]));
+                    NCCLCHECK(ncclGroupEnd()); // End nccl
                 }
-                NCCLCHECK(ncclGroupEnd()); // End nccl
             }
         }
         stop += omp_get_wtime() - start;
